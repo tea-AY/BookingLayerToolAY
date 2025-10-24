@@ -298,8 +298,8 @@
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     
-                    // Fetch booking lines - only confirmed status, starting from today
-                    const bookingResponse = await fetch('https://api.bookinglayer.io/private/booking_lines?status=confirmed', {
+                    // Fetch booking lines - get all statuses to see what we have
+                    const bookingResponse = await fetch('https://api.bookinglayer.io/private/booking_lines', {
                         headers: {
                             'Authorization': `Bearer ${bookinglayerToken}`,
                             'Content-Type': 'application/json'
@@ -312,6 +312,14 @@
 
                     const bookingData = await bookingResponse.json();
                     let bookingLines = bookingData.data || [];
+                    
+                    // Filter for paid/confirmed bookings only
+                    bookingLines = bookingLines.filter(line => 
+                        line.status === 'paid' || line.status === 'confirmed'
+                    );
+                    
+                    console.log('Total booking lines after status filter:', bookingLines.length);
+                    console.log('First booking line:', bookingLines[0]);
 
                     // Fetch products
                     const productsResponse = await fetch('https://api.bookinglayer.io/private/products', {
@@ -331,9 +339,12 @@
 
                     // Parse unique retreats and filter for future dates only
                     const uniqueRetreats = {};
+                    console.log('Today date:', today);
+                    
                     bookingLines.forEach(line => {
                         // Parse start date
                         const startDate = new Date(line.starts_at.replace(' ', 'T'));
+                        console.log('Retreat start:', line.starts_at, 'Parsed:', startDate, 'Future?', startDate >= today);
                         
                         // Only include retreats starting today or in the future
                         if (startDate >= today) {
