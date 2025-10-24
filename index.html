@@ -1,1 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Yogi - Retreat Marketing Planner</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-orange {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .task-card {
+            transition: all 0.3s ease;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .pill {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .emoji-icon {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
 
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Default Marketing Tasks Template
+        const DEFAULT_TASKS = {
+            pre_launch: [
+                {
+                    id: 'pl1',
+                    name: "🎥 Create 'Yogi Stories' content",
+                    channels: ['Instagram', 'Facebook'],
+                    days_before: 60,
+                    description: "Record authentic guest voices about why they came on retreat. Raw, emotive content.",
+                    pillar: 'EXPLORE'
+                },
+                {
+                    id: 'pl2',
+                    name: "📸 Prepare 'Local Stories' content",
+                    channels: ['Instagram', 'Facebook', 'Email', 'Website'],
+                    days_before: 55,
+                    description: "Showcase myths, legends and local traditions from retreat location.",
+                    pillar: 'EXPLORE'
+                },
+                {
+                    id: 'pl3',
+                    name: "🍽️ Create 'Food for Soul' post",
+                    channels: ['Instagram', 'Email', 'Website'],
+                    days_before: 50,
+                    description: "Feature plant-based meals with simplified recipes. Tag chefs.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'pl4',
+                    name: "📧 Early Bird Email Campaign",
+                    channels: ['Email'],
+                    days_before: 45,
+                    description: "Launch early bird offer (3 weeks before price increase).",
+                    pillar: 'SELL'
+                },
+                {
+                    id: 'pl5',
+                    name: "📱 Instagram Story Series",
+                    channels: ['Instagram'],
+                    days_before: 40,
+                    description: "Behind-the-scenes retreat preparation content.",
+                    pillar: 'EXPLORE'
+                },
+                {
+                    id: 'pl6',
+                    name: "🌟 Social Media Announcements",
+                    channels: ['Instagram', 'Facebook'],
+                    days_before: 35,
+                    description: "Official retreat announcement with dates and booking link.",
+                    pillar: 'EXPLORE'
+                }
+            ],
+            promotional: [
+                {
+                    id: 'pr1',
+                    name: "📧 Mid-Campaign Email",
+                    channels: ['Email'],
+                    days_before: 30,
+                    description: "Update on remaining availability and guest excitement.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'pr2',
+                    name: "📸 'Here and Now' UGC Carousel",
+                    channels: ['Instagram', 'Facebook', 'Email'],
+                    days_before: 25,
+                    description: "Curate best shots from previous retreats. Celebrate community.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'pr3',
+                    name: "🎬 Create Reel/Video Preview",
+                    channels: ['Instagram', 'Facebook'],
+                    days_before: 20,
+                    description: "Dynamic video showcasing yoga, location, community.",
+                    pillar: 'EXPLORE'
+                },
+                {
+                    id: 'pr4',
+                    name: "📧 Last Chance Email",
+                    channels: ['Email'],
+                    days_before: 14,
+                    description: "Final call for remaining spaces with testimonials.",
+                    pillar: 'SELL'
+                },
+                {
+                    id: 'pr5',
+                    name: "📱 Instagram Stories Countdown",
+                    channels: ['Instagram'],
+                    days_before: 14,
+                    description: "Start countdown. Share packing tips and excitement.",
+                    pillar: 'ALIGN'
+                }
+            ],
+            pre_retreat: [
+                {
+                    id: 'prer1',
+                    name: "📧 Welcome Pack Email",
+                    channels: ['Email'],
+                    days_before: 28,
+                    description: "Send comprehensive welcome pack with all retreat details.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'prer2',
+                    name: "💬 Create WhatsApp Group",
+                    channels: ['WhatsApp'],
+                    days_before: 21,
+                    description: "Set up group for guests to connect and arrange logistics.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'prer3',
+                    name: "📸 Share Packing Guide",
+                    channels: ['Instagram', 'Facebook'],
+                    days_before: 10,
+                    description: "Helpful content about what to pack for this retreat.",
+                    pillar: 'EXPLORE'
+                },
+                {
+                    id: 'prer4',
+                    name: "🎬 Meet Your Teachers",
+                    channels: ['Instagram'],
+                    days_before: 7,
+                    description: "Introduce yoga teachers and facilitators.",
+                    pillar: 'ALIGN'
+                }
+            ],
+            during_retreat: [
+                {
+                    id: 'dur1',
+                    name: "📸 Film Camera Setup",
+                    channels: ['On-site'],
+                    days_before: 0,
+                    description: "Place cameras with invitation for guests to capture moments.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'dur2',
+                    name: "📱 Live Instagram Stories",
+                    channels: ['Instagram'],
+                    days_before: 0,
+                    description: "Share live stories from retreat (with permission).",
+                    pillar: 'EXPLORE'
+                },
+                {
+                    id: 'dur3',
+                    name: "📸 Professional Content Shoot",
+                    channels: ['All'],
+                    days_before: 0,
+                    description: "Capture photos/video for future marketing.",
+                    pillar: 'ALL'
+                }
+            ],
+            post_retreat: [
+                {
+                    id: 'post1',
+                    name: "📧 Thank You & UGC Request",
+                    channels: ['Email', 'WhatsApp'],
+                    days_after: 3,
+                    description: "Thank guests and request photos. Offer discount code.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'post2',
+                    name: "📸 Sort & Select UGC",
+                    channels: ['Internal'],
+                    days_after: 7,
+                    description: "Review submissions and prepare collaboration posts.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'post3',
+                    name: "📱 Post UGC Carousel",
+                    channels: ['Instagram', 'Facebook'],
+                    days_after: 10,
+                    description: "Share curated content. Tag/collaborate with guests.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'post4',
+                    name: "📧 Newsletter Feature",
+                    channels: ['Email', 'Website'],
+                    days_after: 14,
+                    description: "Feature retreat highlights with photos and stories.",
+                    pillar: 'ALIGN'
+                },
+                {
+                    id: 'post5',
+                    name: "🎬 Create Highlight Reel",
+                    channels: ['Instagram', 'Facebook', 'Website'],
+                    days_after: 21,
+                    description: "Edit professional and UGC into compelling reel.",
+                    pillar: 'EXPLORE'
+                },
+                {
+                    id: 'post6',
+                    name: "📊 Gather Testimonials",
+                    channels: ['Email'],
+                    days_after: 14,
+                    description: "Request formal testimonials for future marketing.",
+                    pillar: 'ALIGN'
+                }
+            ]
+        };
+
+        const CHANNEL_COLORS = {
+            'Instagram': 'bg-pink-100 text-pink-700',
+            'Facebook': 'bg-blue-100 text-blue-700',
+            'Email': 'bg-purple-100 text-purple-700',
+            'Website': 'bg-green-100 text-green-700',
+            'WhatsApp': 'bg-emerald-100 text-emerald-700',
+            'On-site': 'bg-gray-100 text-gray-700',
+            'Internal': 'bg-amber-100 text-amber-700',
+            'All': 'bg-indigo-100 text-indigo-700'
+        };
+
+        const PILLAR_COLORS = {
+            'EXPLORE': 'bg-blue-500 text-white',
+            'ALIGN': 'bg-purple-500 text-white',
+            'SELL': 'bg-orange-500 text-white',
+            'ALL': 'bg-gray-500 text-white'
+        };
+
+        function App() {
+            const [step, setStep] = useState('connect'); // connect, customize, generate
+            const [bookinglayerToken, setBookinglayerToken] = useState('');
+            const [retreats, setRetreats] = useState([]);
+            const [selectedRetreats, setSelectedRetreats] = useState([]);
+            const [tasks, setTasks] = useState(DEFAULT_TASKS);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+
+            const fetchRetreats = async () => {
+                if (!bookinglayerToken) {
+                    setError('Please enter your Bookinglayer API token');
+                    return;
+                }
+
+                setLoading(true);
+                setError('');
+
+                try {
+                    // Fetch booking lines
+                    const bookingResponse = await fetch('https://api.bookinglayer.io/private/booking_lines?status=confirmed', {
+                        headers: {
+                            'Authorization': `Bearer ${bookinglayerToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!bookingResponse.ok) {
+                        throw new Error('Failed to fetch retreats. Check your API token.');
+                    }
+
+                    const bookingData = await bookingResponse.json();
+                    const bookingLines = bookingData.data || [];
+
+                    // Fetch products
+                    const productsResponse = await fetch('https://api.bookinglayer.io/private/products', {
+                        headers: {
+                            'Authorization': `Bearer ${bookinglayerToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const productsData = await productsResponse.json();
+                    const products = productsData.data || [];
+                    
+                    const productMap = {};
+                    products.forEach(p => {
+                        productMap[p.id] = p;
+                    });
+
+                    // Parse unique retreats
+                    const uniqueRetreats = {};
+                    bookingLines.forEach(line => {
+                        const key = `${line.product_id}_${line.starts_at}`;
+                        if (!uniqueRetreats[key]) {
+                            const product = productMap[line.product_id] || {};
+                            uniqueRetreats[key] = {
+                                id: key,
+                                name: product.name || `Retreat ${line.product_id}`,
+                                start_date: line.starts_at,
+                                end_date: line.ends_at,
+                                location: product.location || 'Unknown',
+                                product_id: line.product_id
+                            };
+                        }
+                    });
+
+                    const retreatList = Object.values(uniqueRetreats)
+                        .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+                    setRetreats(retreatList);
+                    setSelectedRetreats(retreatList.map(r => r.id));
+                    setStep('customize');
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const toggleTask = (category, taskId) => {
+                setTasks(prev => ({
+                    ...prev,
+                    [category]: prev[category].map(task =>
+                        task.id === taskId ? { ...task, enabled: !task.enabled } : task
+                    )
+                }));
+            };
+
+            const updateTask = (category, taskId, field, value) => {
+                setTasks(prev => ({
+                    ...prev,
+                    [category]: prev[category].map(task =>
+                        task.id === taskId ? { ...task, [field]: value } : task
+                    )
+                }));
+            };
+
+            const addTask = (category) => {
+                const newTask = {
+                    id: `custom_${Date.now()}`,
+                    name: "📝 New Custom Task",
+                    channels: ['Instagram'],
+                    days_before: category === 'post_retreat' ? undefined : 30,
+                    days_after: category === 'post_retreat' ? 7 : undefined,
+                    description: "Add task description here...",
+                    pillar: 'EXPLORE',
+                    enabled: true,
+                    custom: true
+                };
+                
+                setTasks(prev => ({
+                    ...prev,
+                    [category]: [...prev[category], newTask]
+                }));
+            };
+
+            const removeTask = (category, taskId) => {
+                setTasks(prev => ({
+                    ...prev,
+                    [category]: prev[category].filter(task => task.id !== taskId)
+                }));
+            };
+
+            const generateCSV = () => {
+                let csv = 'Task Name,Start Date,Due Date,Notes,Tags\n';
+                
+                selectedRetreats.forEach(retreatId => {
+                    const retreat = retreats.find(r => r.id === retreatId);
+                    if (!retreat) return;
+
+                    const startDate = new Date(retreat.start_date.replace(' ', 'T'));
+                    const endDate = new Date(retreat.end_date.replace(' ', 'T'));
+
+                    // Milestone
+                    csv += `"🧘 ${retreat.name}","${formatDate(startDate)}","${formatDate(startDate)}","Retreat: ${retreat.location} | ${retreat.start_date} to ${retreat.end_date}","milestone,retreat"\n`;
+
+                    // Add tasks
+                    Object.entries(tasks).forEach(([category, taskList]) => {
+                        taskList.forEach(task => {
+                            if (task.enabled === false) return;
+
+                            let dueDate;
+                            if (task.days_before !== undefined) {
+                                dueDate = new Date(startDate);
+                                dueDate.setDate(dueDate.getDate() - task.days_before);
+                            } else if (task.days_after !== undefined) {
+                                dueDate = new Date(endDate);
+                                dueDate.setDate(dueDate.getDate() + task.days_after);
+                            } else {
+                                dueDate = startDate;
+                            }
+
+                            const channels = task.channels.join(', ');
+                            const notes = `${retreat.name} | ${task.description} | Channels: ${channels} | Pillar: ${task.pillar}`;
+                            const tags = `${retreat.name},${task.pillar},${category}`;
+
+                            csv += `"${task.name}","${formatDate(startDate)}","${formatDate(dueDate)}","${notes}","${tags}"\n`;
+                        });
+                    });
+                });
+
+                return csv;
+            };
+
+            const downloadCSV = () => {
+                const csv = generateCSV();
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `adventure-yogi-retreats-${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+            };
+
+            const formatDate = (date) => {
+                return date.toISOString().split('T')[0];
+            };
+
+            const formatDisplayDate = (dateStr) => {
+                const date = new Date(dateStr.replace(' ', 'T'));
+                return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            };
+
+            return (
+                <div className="min-h-screen">
+                    {/* Header */}
+                    <div className="gradient-bg text-white py-8 px-4">
+                        <div className="max-w-7xl mx-auto">
+                            <h1 className="text-4xl font-bold mb-2">🧘 Adventure Yogi</h1>
+                            <p className="text-xl opacity-90">Retreat Marketing Planner</p>
+                        </div>
+                    </div>
+
+                    {/* Progress Steps */}
+                    <div className="max-w-7xl mx-auto px-4 py-8">
+                        <div className="flex items-center justify-center space-x-4 mb-8">
+                            <Step number="1" label="Connect" active={step === 'connect'} completed={step !== 'connect'} />
+                            <div className="w-16 h-1 bg-gray-300"></div>
+                            <Step number="2" label="Customize" active={step === 'customize'} completed={step === 'generate'} />
+                            <div className="w-16 h-1 bg-gray-300"></div>
+                            <Step number="3" label="Generate" active={step === 'generate'} />
+                        </div>
+
+                        {/* Step 1: Connect to Bookinglayer */}
+                        {step === 'connect' && (
+                            <div className="max-w-2xl mx-auto">
+                                <div className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-2xl font-bold mb-4">Connect to Bookinglayer</h2>
+                                    <p className="text-gray-600 mb-6">
+                                        Enter your Bookinglayer API token to fetch your retreat schedules.
+                                    </p>
+
+                                    {error && (
+                                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+                                            {error}
+                                        </div>
+                                    )}
+
+                                    <div className="mb-6">
+                                        <label className="block text-sm font-medium mb-2">
+                                            Bookinglayer API Token
+                                        </label>
+                                        <input
+                                            type="password"
+                                            value={bookinglayerToken}
+                                            onChange={(e) => setBookinglayerToken(e.target.value)}
+                                            placeholder="Enter your API token..."
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        />
+                                        <p className="text-sm text-gray-500 mt-2">
+                                            Get your token from: Bookinglayer → Settings → API → Tokens
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={fetchRetreats}
+                                        disabled={loading}
+                                        className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {loading ? 'Fetching Retreats...' : 'Fetch Retreats →'}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Step 2: Customize Tasks */}
+                        {step === 'customize' && (
+                            <div>
+                                <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+                                    <h2 className="text-2xl font-bold mb-4">Select Retreats</h2>
+                                    <p className="text-gray-600 mb-4">Found {retreats.length} retreats</p>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {retreats.map(retreat => (
+                                            <div key={retreat.id} className="border rounded-lg p-4 hover:border-purple-500 transition">
+                                                <label className="flex items-start cursor-pointer">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedRetreats.includes(retreat.id)}
+                                                        onChange={(e) => {
+                                                            if (e.target.checked) {
+                                                                setSelectedRetreats([...selectedRetreats, retreat.id]);
+                                                            } else {
+                                                                setSelectedRetreats(selectedRetreats.filter(id => id !== retreat.id));
+                                                            }
+                                                        }}
+                                                        className="mt-1 mr-3"
+                                                    />
+                                                    <div>
+                                                        <div className="font-medium">{retreat.name}</div>
+                                                        <div className="text-sm text-gray-600">{retreat.location}</div>
+                                                        <div className="text-sm text-gray-500 mt-1">
+                                                            {formatDisplayDate(retreat.start_date)} - {formatDisplayDate(retreat.end_date)}
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <TaskCustomizer tasks={tasks} setTasks={setTasks} addTask={addTask} removeTask={removeTask} updateTask={updateTask} toggleTask={toggleTask} />
+
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={() => setStep('connect')}
+                                        className="px-6 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+                                    >
+                                        ← Back
+                                    </button>
+                                    <button
+                                        onClick={() => setStep('generate')}
+                                        disabled={selectedRetreats.length === 0}
+                                        className="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 disabled:opacity-50"
+                                    >
+                                        Continue to Generate →
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Step 3: Generate CSV */}
+                        {step === 'generate' && (
+                            <div className="max-w-4xl mx-auto">
+                                <div className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-2xl font-bold mb-4">🎉 Ready to Generate!</h2>
+                                    
+                                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-6">
+                                        <h3 className="font-bold text-lg mb-3">Summary</h3>
+                                        <div className="space-y-2 text-gray-700">
+                                            <div>📅 <strong>{selectedRetreats.length}</strong> retreats selected</div>
+                                            <div>✅ <strong>{Object.values(tasks).flat().filter(t => t.enabled !== false).length}</strong> marketing tasks per retreat</div>
+                                            <div>📊 <strong>{selectedRetreats.length * Object.values(tasks).flat().filter(t => t.enabled !== false).length}</strong> total tasks</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-6">
+                                        <h3 className="font-bold mb-3">CSV Import Instructions</h3>
+                                        <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm text-gray-600">
+                                            <p>1. Download the CSV file below</p>
+                                            <p>2. Open Asana and go to your project</p>
+                                            <p>3. Click the "..." menu → Import → CSV</p>
+                                            <p>4. Upload the file and map columns:</p>
+                                            <ul className="ml-6 list-disc space-y-1">
+                                                <li>Task Name → Name</li>
+                                                <li>Due Date → Due Date</li>
+                                                <li>Notes → Description</li>
+                                                <li>Tags → Tags</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={downloadCSV}
+                                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 px-6 rounded-lg font-bold text-lg hover:shadow-lg transition"
+                                    >
+                                        📥 Download CSV for Asana
+                                    </button>
+
+                                    <div className="flex justify-between mt-8">
+                                        <button
+                                            onClick={() => setStep('customize')}
+                                            className="px-6 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+                                        >
+                                            ← Back to Customize
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setStep('connect');
+                                                setBookinglayerToken('');
+                                                setRetreats([]);
+                                                setSelectedRetreats([]);
+                                                setTasks(DEFAULT_TASKS);
+                                            }}
+                                            className="px-6 py-3 text-purple-600 font-medium hover:underline"
+                                        >
+                                            Start Over
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        function Step({ number, label, active, completed }) {
+            return (
+                <div className="flex flex-col items-center">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold ${
+                        active ? 'bg-purple-600 text-white' : 
+                        completed ? 'bg-green-500 text-white' : 
+                        'bg-gray-200 text-gray-500'
+                    }`}>
+                        {completed ? '✓' : number}
+                    </div>
+                    <div className={`mt-2 text-sm font-medium ${active ? 'text-purple-600' : 'text-gray-500'}`}>
+                        {label}
+                    </div>
+                </div>
+            );
+        }
+
+        function TaskCustomizer({ tasks, setTasks, addTask, removeTask, updateTask, toggleTask }) {
+            const [expandedCategory, setExpandedCategory] = useState('pre_launch');
+
+            const categories = {
+                pre_launch: { title: 'Pre-Launch Tasks', subtitle: '60-35 days before', emoji: '🚀' },
+                promotional: { title: 'Promotional Tasks', subtitle: '30-14 days before', emoji: '📢' },
+                pre_retreat: { title: 'Pre-Retreat Tasks', subtitle: '28-7 days before', emoji: '✈️' },
+                during_retreat: { title: 'During Retreat', subtitle: 'On-site content', emoji: '🎬' },
+                post_retreat: { title: 'Post-Retreat Tasks', subtitle: '3-21 days after', emoji: '💌' }
+            };
+
+            return (
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 className="text-2xl font-bold">Customize Marketing Tasks</h2>
+                            <p className="text-gray-600">Add, edit, or remove tasks for each phase</p>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-2xl font-bold text-purple-600">
+                                {Object.values(tasks).flat().filter(t => t.enabled !== false).length}
+                            </div>
+                            <div className="text-sm text-gray-600">Active Tasks</div>
+                        </div>
+                    </div>
+
+                    {Object.entries(categories).map(([key, cat]) => (
+                        <div key={key} className="mb-4 border rounded-lg">
+                            <button
+                                onClick={() => setExpandedCategory(expandedCategory === key ? null : key)}
+                                className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <span className="text-2xl">{cat.emoji}</span>
+                                    <div className="text-left">
+                                        <div className="font-bold">{cat.title}</div>
+                                        <div className="text-sm text-gray-500">{cat.subtitle}</div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                                        {tasks[key].filter(t => t.enabled !== false).length} tasks
+                                    </span>
+                                    <span className="text-gray-400">
+                                        {expandedCategory === key ? '▼' : '▶'}
+                                    </span>
+                                </div>
+                            </button>
+
+                            {expandedCategory === key && (
+                                <div className="px-6 py-4 bg-gray-50 space-y-3">
+                                    {tasks[key].map(task => (
+                                        <TaskCard
+                                            key={task.id}
+                                            task={task}
+                                            category={key}
+                                            onToggle={() => toggleTask(key, task.id)}
+                                            onUpdate={(field, value) => updateTask(key, task.id, field, value)}
+                                            onRemove={() => removeTask(key, task.id)}
+                                        />
+                                    ))}
+                                    
+                                    <button
+                                        onClick={() => addTask(key)}
+                                        className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-purple-500 hover:text-purple-500 font-medium"
+                                    >
+                                        + Add Custom Task
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        function TaskCard({ task, category, onToggle, onUpdate, onRemove }) {
+            const [isEditing, setIsEditing] = useState(false);
+
+            return (
+                <div className={`task-card bg-white rounded-lg p-4 border-2 ${task.enabled === false ? 'opacity-50 border-gray-200' : 'border-gray-200'}`}>
+                    <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start gap-3 flex-1">
+                            <input
+                                type="checkbox"
+                                checked={task.enabled !== false}
+                                onChange={onToggle}
+                                className="mt-1"
+                            />
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    value={task.name}
+                                    onChange={(e) => onUpdate('name', e.target.value)}
+                                    className="flex-1 px-2 py-1 border rounded"
+                                />
+                            ) : (
+                                <div className="flex-1 font-medium">{task.name}</div>
+                            )}
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setIsEditing(!isEditing)}
+                                className="text-sm text-purple-600 hover:text-purple-700"
+                            >
+                                {isEditing ? '✓' : '✏️'}
+                            </button>
+                            {task.custom && (
+                                <button
+                                    onClick={onRemove}
+                                    className="text-sm text-red-600 hover:text-red-700"
+                                >
+                                    🗑️
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    {isEditing ? (
+                        <div className="space-y-3 ml-8">
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 block mb-1">Description</label>
+                                <textarea
+                                    value={task.description}
+                                    onChange={(e) => onUpdate('description', e.target.value)}
+                                    className="w-full px-3 py-2 border rounded text-sm"
+                                    rows="2"
+                                />
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-xs font-medium text-gray-600 block mb-1">
+                                        {task.days_after !== undefined ? 'Days After Retreat' : 'Days Before Retreat'}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={task.days_before !== undefined ? task.days_before : task.days_after}
+                                        onChange={(e) => onUpdate(task.days_after !== undefined ? 'days_after' : 'days_before', parseInt(e.target.value))}
+                                        className="w-full px-3 py-2 border rounded text-sm"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-medium text-gray-600 block mb-1">Content Pillar</label>
+                                    <select
+                                        value={task.pillar}
+                                        onChange={(e) => onUpdate('pillar', e.target.value)}
+                                        className="w-full px-3 py-2 border rounded text-sm"
+                                    >
+                                        <option value="EXPLORE">EXPLORE</option>
+                                        <option value="ALIGN">ALIGN</option>
+                                        <option value="SELL">SELL</option>
+                                        <option value="ALL">ALL</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 block mb-1">Channels (comma-separated)</label>
+                                <input
+                                    type="text"
+                                    value={task.channels.join(', ')}
+                                    onChange={(e) => onUpdate('channels', e.target.value.split(',').map(s => s.trim()))}
+                                    className="w-full px-3 py-2 border rounded text-sm"
+                                />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="ml-8 space-y-2">
+                            <div className="text-sm text-gray-600">{task.description}</div>
+                            <div className="flex flex-wrap gap-2">
+                                {task.channels.map(channel => (
+                                    <span key={channel} className={`pill text-xs ${CHANNEL_COLORS[channel] || 'bg-gray-100 text-gray-600'}`}>
+                                        {channel}
+                                    </span>
+                                ))}
+                                <span className={`pill text-xs ${PILLAR_COLORS[task.pillar]}`}>
+                                    {task.pillar}
+                                </span>
+                                <span className="pill text-xs bg-gray-100 text-gray-600">
+                                    {task.days_before !== undefined ? `${task.days_before}d before` : `${task.days_after}d after`}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
