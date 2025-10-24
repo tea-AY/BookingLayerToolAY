@@ -357,9 +357,18 @@
                                     retreatType = `${duration} nights`;
                                 }
                                 
+                                // Create readable name
+                                let retreatName = product.name || product.title || '';
+                                if (!retreatName || retreatName.includes('a63') || retreatName.length > 50) {
+                                    // If name is an ID or too long, create a friendly name
+                                    const location = product.location || 'Retreat';
+                                    const dateStr = new Date(line.starts_at.replace(' ', 'T')).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+                                    retreatName = `${location} - ${retreatType} (${dateStr})`;
+                                }
+                                
                                 uniqueRetreats[key] = {
                                     id: key,
-                                    name: product.name || `Retreat ${line.product_id}`,
+                                    name: retreatName,
                                     start_date: line.starts_at,
                                     end_date: line.ends_at,
                                     location: product.location || 'Unknown',
