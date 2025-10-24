@@ -313,11 +313,12 @@
                     const productsData = await productsResponse.json();
                     let products = productsData.data || [];
                     
-                    // Filter for packages only (not individual bookable items)
-                    products = products.filter(p => p.type === 'package' || p.is_package === true);
+                    console.log('Total products:', products.length);
+                    console.log('First 3 products:', products.slice(0, 3));
+                    console.log('Product types:', [...new Set(products.map(p => p.type))]);
                     
-                    console.log('Total packages:', products.length);
-                    console.log('First package:', products[0]);
+                    // Don't filter yet - let's see what we have
+                    // products = products.filter(p => p.type === 'package' || p.is_package === true);
 
                     // Parse retreats from packages
                     const retreatList = [];
