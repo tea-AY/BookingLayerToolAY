@@ -298,101 +298,62 @@
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     
-                    // Fetch booking lines - get all statuses to see what we have
-                    const bookingResponse = await fetch('https://api.bookinglayer.io/private/booking_lines', {
+                    // Fetch packages directly
+                    const packagesResponse = await fetch('https://api.bookinglayer.io/private/packages', {
                         headers: {
                             'Authorization': `Bearer ${bookinglayerToken}`,
                             'Content-Type': 'application/json'
                         }
                     });
 
-                    if (!bookingResponse.ok) {
+                    if (!packagesResponse.ok) {
                         throw new Error('Failed to fetch retreats. Check your API token.');
                     }
 
-                    const bookingData = await bookingResponse.json();
-                    let bookingLines = bookingData.data || [];
+                    const packagesData = await packagesResponse.json();
+                    let packages = packagesData.data || [];
                     
-                    // Filter for paid/confirmed bookings only
-                    bookingLines = bookingLines.filter(line => 
-                        line.status === 'paid' || line.status === 'confirmed'
-                    );
-                    
-                    console.log('Total booking lines after status filter:', bookingLines.length);
-                    console.log('First booking line:', bookingLines[0]);
+                    console.log('Total packages:', packages.length);
+                    console.log('First package:', packages[0]);
 
-                    // Fetch products
-                    const productsResponse = await fetch('https://api.bookinglayer.io/private/products', {
-                        headers: {
-                            'Authorization': `Bearer ${bookinglayerToken}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    const productsData = await productsResponse.json();
-                    const products = productsData.data || [];
-                    
-                    const productMap = {};
-                    products.forEach(p => {
-                        productMap[p.id] = p;
-                    });
-
-                    // Parse unique retreats and filter for future dates only
-                    const uniqueRetreats = {};
-                    console.log('Today date:', today);
-                    
-                    bookingLines.forEach(line => {
-                        // Parse start date
-                        const startDate = new Date(line.starts_at.replace(' ', 'T'));
-                        console.log('Retreat start:', line.starts_at, 'Parsed:', startDate, 'Future?', startDate >= today);
+                    // Parse retreats from packages
+                    const retreatList = [];
+                    packages.forEach(pkg => {
+                        const startDate = new Date(pkg.starts_at?.replace(' ', 'T') || pkg.start_date?.replace(' ', 'T'));
                         
-                        // Only include retreats starting today or in the future
+                        // Only include future retreats
                         if (startDate >= today) {
-                            const key = `${line.product_id}_${line.starts_at}`;
-                            if (!uniqueRetreats[key]) {
-                                const product = productMap[line.product_id] || {};
-                                
-                                // Calculate duration
-                                const endDate = new Date(line.ends_at.replace(' ', 'T'));
-                                const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-                                
-                                // Determine retreat type
-                                let retreatType = '';
-                                if (duration === 3) {
-                                    retreatType = 'Weekend';
-                                } else if (duration === 4) {
-                                    retreatType = 'Mid-Week';
-                                } else if (duration >= 7) {
-                                    retreatType = 'Holiday';
-                                } else {
-                                    retreatType = `${duration} nights`;
-                                }
-                                
-                                // Create readable name
-                                let retreatName = product.name || product.title || '';
-                                
-                                // If name looks like an ID, create friendly name
-                                if (!retreatName || retreatName.match(/^[a-f0-9-]{30,}$/)) {
-                                    const location = product.location || 'Retreat';
-                                    retreatName = `${location} - ${retreatType}`;
-                                }
-                                
-                                uniqueRetreats[key] = {
-                                    id: key,
-                                    name: retreatName,
-                                    start_date: line.starts_at,
-                                    end_date: line.ends_at,
-                                    location: product.location || 'Unknown',
-                                    product_id: line.product_id,
-                                    duration: duration,
-                                    retreat_type: retreatType
-                                };
+                            const endDate = new Date(pkg.ends_at?.replace(' ', 'T') || pkg.end_date?.replace(' ', 'T'));
+                            const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                            
+                            let retreatType = '';
+                            if (duration === 3) {
+                                retreatType = 'Weekend';
+                            } else if (duration === 4) {
+                                retreatType = 'Mid-Week';
+                            } else if (duration >= 7) {
+                                retreatType = 'Holiday';
+                            } else {
+                                retreatType = `${duration} nights`;
                             }
+                            
+                            // Use package title/name
+                            const name = pkg.title || pkg.name || `${pkg.category || 'Retreat'} - ${retreatType}`;
+                            
+                            retreatList.push({
+                                id: pkg.id,
+                                name: name,
+                                start_date: pkg.starts_at || pkg.start_date,
+                                end_date: pkg.ends_at || pkg.end_date,
+                                location: pkg.category || pkg.location || 'Unknown',
+                                product_id: pkg.id,
+                                duration: duration,
+                                retreat_type: retreatType
+                            });
                         }
                     });
 
-                    const retreatList = Object.values(uniqueRetreats)
-                        .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+                    retreatList.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
 
                     if (retreatList.length === 0) {
                         setError('No upcoming retreats found. All retreats may be in the past.');
