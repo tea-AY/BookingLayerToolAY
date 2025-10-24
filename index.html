@@ -298,32 +298,36 @@
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     
-                    // Fetch packages directly
-                    const packagesResponse = await fetch('https://api.bookinglayer.io/private/packages', {
+                    // Fetch products (packages are products with type=package)
+                    const productsResponse = await fetch('https://api.bookinglayer.io/private/products', {
                         headers: {
                             'Authorization': `Bearer ${bookinglayerToken}`,
                             'Content-Type': 'application/json'
                         }
                     });
 
-                    if (!packagesResponse.ok) {
+                    if (!productsResponse.ok) {
                         throw new Error('Failed to fetch retreats. Check your API token.');
                     }
 
-                    const packagesData = await packagesResponse.json();
-                    let packages = packagesData.data || [];
+                    const productsData = await productsResponse.json();
+                    let products = productsData.data || [];
                     
-                    console.log('Total packages:', packages.length);
-                    console.log('First package:', packages[0]);
+                    // Filter for packages only (not individual bookable items)
+                    products = products.filter(p => p.type === 'package' || p.is_package === true);
+                    
+                    console.log('Total packages:', products.length);
+                    console.log('First package:', products[0]);
 
                     // Parse retreats from packages
                     const retreatList = [];
-                    packages.forEach(pkg => {
-                        const startDate = new Date(pkg.starts_at?.replace(' ', 'T') || pkg.start_date?.replace(' ', 'T'));
+                    products.forEach(pkg => {
+                        // Packages may have schedule/availability dates
+                        const startDate = new Date(pkg.starts_at?.replace(' ', 'T') || pkg.start_date?.replace(' ', 'T') || pkg.available_from?.replace(' ', 'T'));
                         
                         // Only include future retreats
-                        if (startDate >= today) {
-                            const endDate = new Date(pkg.ends_at?.replace(' ', 'T') || pkg.end_date?.replace(' ', 'T'));
+                        if (startDate && startDate >= today) {
+                            const endDate = new Date(pkg.ends_at?.replace(' ', 'T') || pkg.end_date?.replace(' ', 'T') || pkg.available_to?.replace(' ', 'T'));
                             const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
                             
                             let retreatType = '';
@@ -337,15 +341,15 @@
                                 retreatType = `${duration} nights`;
                             }
                             
-                            // Use package title/name
-                            const name = pkg.title || pkg.name || `${pkg.category || 'Retreat'} - ${retreatType}`;
+                            // Use product name/title
+                            const name = pkg.name || pkg.title || `${pkg.location || 'Retreat'} - ${retreatType}`;
                             
                             retreatList.push({
                                 id: pkg.id,
                                 name: name,
-                                start_date: pkg.starts_at || pkg.start_date,
-                                end_date: pkg.ends_at || pkg.end_date,
-                                location: pkg.category || pkg.location || 'Unknown',
+                                start_date: pkg.starts_at || pkg.start_date || pkg.available_from,
+                                end_date: pkg.ends_at || pkg.end_date || pkg.available_to,
+                                location: pkg.location || pkg.category || 'Unknown',
                                 product_id: pkg.id,
                                 duration: duration,
                                 retreat_type: retreatType
@@ -358,6 +362,8 @@
                     if (retreatList.length === 0) {
                         setError('No upcoming retreats found. All retreats may be in the past.');
                     }
+
+                    console.log('Final retreat list:', retreatList);
 
                     setRetreats(retreatList);
                     setSelectedRetreats(retreatList.map(r => r.id));
