@@ -94,149 +94,105 @@
     };
 
     /* ------------------ APP ------------------ */
-    function App() {
-        const [step, setStep] = useState('connect');
-        const [bookinglayerToken, setBookinglayerToken] = useState('');
-        const [retreats, setRetreats] = useState([]);
-        const [selectedRetreats, setSelectedRetreats] = useState([]);
-        const [tasks, setTasks] = useState(DEFAULT_TASKS);
-        const [loading, setLoading] = useState(false);
-        const [error, setError] = useState('');
+import { useState } from "react";
+});
 
-        // ---------------- Helper: Robust date parser for availability/booking fields ----------------
-        const parseDateFromItem = (item, possibleFields) => {
-            for (const f of possibleFields) {
-                const v = item[f];
-                if (!v) continue;
-                // v might be 'YYYY-MM-DD', 'YYYY-MM-DD HH:MM:SS' or ISO; replace space with 'T' when needed
-                try {
-                    const normalized = typeof v === 'string' ? v.replace(' ', 'T') : v;
-                    const d = new Date(normalized);
-                    if (!isNaN(d)) return d;
-                } catch (e) {
-                    continue;
-                }
-            }
-            return null;
-        };
 
-        // ---------------- Fetch retreats (availabilities) ----------------
-        const fetchRetreats = async () => {
-  if (!bookinglayerToken) {
-    setError('Please enter your Bookinglayer API token');
-    return;
-  }
+// 3) Combine booking lines + product metadata
+const unique = {};
 
-  setLoading(true);
-  setError('');
 
-  try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+bookingLines.forEach((line) => {
+const start = new Date(line.starts_at.replace(" ", "T"));
+const end = new Date(line.ends_at.replace(" ", "T"));
 
-    // 1) Fetch booking lines
-    const blResponse = await fetch('https://api.bookinglayer.io/private/booking_lines', {
-      headers: {
-        'Authorization': `Bearer ${bookinglayerToken}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    if (!blResponse.ok) {
-      const txt = await blResponse.text().catch(() => null);
-      throw new Error(`Failed to fetch booking lines (status ${blResponse.status}). ${txt ? 'Response: ' + txt : ''}`);
-    }
-    const blJson = await blResponse.json();
-    const bookingLines = blJson.data || [];
 
-    // 2) Fetch products
-    const productsResponse = await fetch('https://api.bookinglayer.io/private/products', {
-      headers: {
-        'Authorization': `Bearer ${bookinglayerToken}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    let products = [];
-    if (productsResponse.ok) {
-      const prodJson = await productsResponse.json();
-      products = prodJson.data || [];
-    } else {
-      console.warn('Could not fetch products; continuing without product metadata.');
-    }
-    const productMap = {};
-    products.forEach(p => {
-      productMap[p.id] = p;
-    });
+if (isNaN(start) || isNaN(end)) return;
+if (start < today) return; // Ignore past retreats
 
-    // 3) Build retreat list from booking lines
-    const unique = {};
-    bookingLines.forEach(line => {
-      const start = new Date(line.starts_at.replace(' ', 'T'));
-      const end = new Date(line.ends_at.replace(' ', 'T'));
 
-      if (isNaN(start) || isNaN(end)) return;
-      if (start < today) return;
+const key = `${line.product_id}_${line.starts_at}`;
 
-      const key = `${line.product_id}_${line.starts_at}`;
-      if (!unique[key]) {
-        const duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-        let retreatType = `${duration} nights`;
-        if (duration === 3) retreatType = 'Weekend';
-        else if (duration === 4) retreatType = 'Mid-Week';
-        else if (duration >= 7) retreatType = 'Holiday';
 
-        const prod = productMap[line.product_id] || {};
-        const name = prod.name || prod.title || `Retreat (${retreatType})`;
-        const location = prod.location || prod.category || 'Unknown';
+if (!unique[key]) {
+const duration = Math.ceil(
+(end - start) / (1000 * 60 * 60 * 24)
+);
 
-        unique[key] = {
-          id: key,
-          name,
-          start_date: line.starts_at,
-          end_date: line.ends_at,
-          location,
-          product_id: line.product_id,
-          duration,
-          retreat_type: retreatType
-        };
-      }
-    });
 
-    const retreatList = Object.values(unique).sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+// Retreat type based on duration
+let retreatType = `${duration} nights`;
+if (duration === 3) retreatType = "Weekend";
+else if (duration === 4) retreatType = "Mid-Week";
+else if (duration >= 7) retreatType = "Holiday";
 
-    if (retreatList.length === 0) {
-      setError('No upcoming retreats found via booking lines.');
-    }
 
-    setRetreats(retreatList);
-    setSelectedRetreats(retreatList.map(r => r.id));
-    setStep('customize');
-  } catch (err) {
-    console.error(err);
-    setError(err.message || 'Error fetching retreats');
-  } finally {
-    setLoading(false);
-  }
+const prod = productMap[line.product_id] || {};
+const name = prod.name || prod.title || `Retreat (${retreatType})`;
+const location = prod.location || prod.category || "Unknown";
+
+
+unique[key] = {
+id: key,
+name,
+start_date: line.starts_at,
+end_date: line.ends_at,
+location,
+product_id: line.product_id,
+duration,
+retreat_type: retreatType,
+};
+}
+});
+
+
+const retreatList = Object.values(unique).sort(
+(a, b) => new Date(a.start_date) - new Date(b.start_date)
+);
+
+
+if (retreatList.length === 0) {
+setError("No upcoming retreats found via booking lines.");
+}
+
+
+setRetreats(retreatList);
+setSelectedRetreats(retreatList.map((r) => r.id));
+} catch (err) {
+console.error(err);
+setError(err.message || "Error fetching retreats");
+} finally {
+setLoading(false);
+}
 };
 
 
-                const retreatList = Object.values(uniqueMap).sort((a,b) => new Date(a.start_date) - new Date(b.start_date));
+return (
+<div>
+<h1>Connect to Bookinglayer</h1>
+<p>Enter your Bookinglayer API token to fetch upcoming retreats.</p>
 
-                if (retreatList.length === 0) {
-                    setError('No upcoming retreats found. All retreats may be in the past or the API returned no availabilities.');
-                    setRetreats([]);
-                    setSelectedRetreats([]);
-                } else {
-                    setRetreats(retreatList);
-                    setSelectedRetreats(retreatList.map(r => r.id));
-                    setStep('customize');
-                }
-            } catch (err) {
-                console.error(err);
-                setError(err.message || 'An unknown error occurred while fetching retreats.');
-            } finally {
-                setLoading(false);
-            }
-        };
+
+{error && <div style={{ color: "red" }}>{error}</div>}
+
+
+<input
+type="password"
+value={bookinglayerToken}
+placeholder="Enter Bookinglayer API Token"
+onChange={(e) => setBookinglayerToken(e.target.value)}
+/>
+
+
+<button onClick={fetchRetreats} disabled={loading}>
+{loading ? "Fetching..." : "Fetch Retreats"}
+</button>
+
+
+<pre>{JSON.stringify(retreats, null, 2)}</pre>
+</div>
+);
+}
 
         /* ---------------- Task helpers (unchanged) ---------------- */
         const toggleTask = (category, taskId) => {
