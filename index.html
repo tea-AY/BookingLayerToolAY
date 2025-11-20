@@ -299,19 +299,22 @@
                     today.setHours(0, 0, 0, 0);
                     
                     // Fetch all booking lines (actual scheduled retreats)
-                    const bookingResponse = await fetch('https://api.bookinglayer.io/private/booking_lines', {
+                    const availabilityResponse = await fetch(
+                    "https://api.bookinglayer.io/private/availabilities",
+                    {
                         headers: {
-                            'Authorization': `Bearer ${bookinglayerToken}`,
-                            'Content-Type': 'application/json'
+                            "Authorization": `Bearer ${bookinglayerToken}`,
+                            "Content-Type": "application/json"
                         }
-                    });
-
-                    if (!bookingResponse.ok) {
-                        throw new Error('Failed to fetch retreats. Check your API token.');
                     }
+                );
 
-                    const bookingData = await bookingResponse.json();
-                    let bookingLines = bookingData.data || [];
+                if (!availabilityResponse.ok) {
+                    throw new Error("Failed to fetch availabilities. Check your API token.");
+                }
+
+                const availabilityData = await availabilityResponse.json();
+                const availabilities = availabilityData.data || [];
                     
                     console.log('Total booking lines:', bookingLines.length);
                     
