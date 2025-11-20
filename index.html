@@ -122,129 +122,102 @@
 
         // ---------------- Fetch retreats (availabilities) ----------------
         const fetchRetreats = async () => {
-            if (!bookinglayerToken) {
-                setError('Please enter your Bookinglayer API token');
-                return;
-            }
+  if (!bookinglayerToken) {
+    setError('Please enter your Bookinglayer API token');
+    return;
+  }
 
-            setLoading(true);
-            setError('');
+  setLoading(true);
+  setError('');
 
-            try {
-                // today at midnight local (used for filtering)
-                const today = new Date();
-                today.setHours(0,0,0,0);
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-                // 1) fetch availabilities (these are the scheduled retreat instances)
-                const availResponse = await fetch('https://api.bookinglayer.io/private/availabilities', {
-                    headers: {
-                        'Authorization': `Bearer ${bookinglayerToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+    // 1) Fetch booking lines
+    const blResponse = await fetch('https://api.bookinglayer.io/private/booking_lines', {
+      headers: {
+        'Authorization': `Bearer ${bookinglayerToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!blResponse.ok) {
+      const txt = await blResponse.text().catch(() => null);
+      throw new Error(`Failed to fetch booking lines (status ${blResponse.status}). ${txt ? 'Response: ' + txt : ''}`);
+    }
+    const blJson = await blResponse.json();
+    const bookingLines = blJson.data || [];
 
-                if (!availResponse.ok) {
-                    // helpful error message with status
-                    const txt = await availResponse.text().catch(()=>null);
-                    throw new Error(`Failed to fetch availabilities (status ${availResponse.status}). ${txt ? 'Response: ' + txt : ''}`);
-                }
+    // 2) Fetch products
+    const productsResponse = await fetch('https://api.bookinglayer.io/private/products', {
+      headers: {
+        'Authorization': `Bearer ${bookinglayerToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    let products = [];
+    if (productsResponse.ok) {
+      const prodJson = await productsResponse.json();
+      products = prodJson.data || [];
+    } else {
+      console.warn('Could not fetch products; continuing without product metadata.');
+    }
+    const productMap = {};
+    products.forEach(p => {
+      productMap[p.id] = p;
+    });
 
-                const availJson = await availResponse.json();
-                const availabilities = Array.isArray(availJson.data) ? availJson.data : (availJson.data ? [availJson.data] : []);
+    // 3) Build retreat list from booking lines
+    const unique = {};
+    bookingLines.forEach(line => {
+      const start = new Date(line.starts_at.replace(' ', 'T'));
+      const end = new Date(line.ends_at.replace(' ', 'T'));
 
-                // 2) fetch products (for nicer names/locations) - optional but helpful
-                const productsResponse = await fetch('https://api.bookinglayer.io/private/products', {
-                    headers: {
-                        'Authorization': `Bearer ${bookinglayerToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+      if (isNaN(start) || isNaN(end)) return;
+      if (start < today) return;
 
-                let products = [];
-                if (productsResponse.ok) {
-                    const productsJson = await productsResponse.json();
-                    products = productsJson.data || [];
-                } else {
-                    // not critical; continue without product metadata
-                    console.warn('Products fetch failed; continuing without product names/locations.');
-                }
+      const key = `${line.product_id}_${line.starts_at}`;
+      if (!unique[key]) {
+        const duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+        let retreatType = `${duration} nights`;
+        if (duration === 3) retreatType = 'Weekend';
+        else if (duration === 4) retreatType = 'Mid-Week';
+        else if (duration >= 7) retreatType = 'Holiday';
 
-                const productMap = {};
-                products.forEach(p => {
-                    if (p && (p.id !== undefined)) productMap[p.id] = p;
-                });
+        const prod = productMap[line.product_id] || {};
+        const name = prod.name || prod.title || `Retreat (${retreatType})`;
+        const location = prod.location || prod.category || 'Unknown';
 
-                // 3) normalize availabilities into retreats
-                // handle different field names that Bookinglayer could return
-                const startFields = ['start', 'starts_at', 'start_date', 'startsAt', 'starts'];
-                const endFields = ['end', 'ends_at', 'end_date', 'endsAt', 'ends'];
-                const productIdFields = ['product_id', 'product', 'productId'];
-                const nameFields = ['name', 'title', 'product_name'];
-                const locationFields = ['location', 'location_name', 'venue', 'place'];
+        unique[key] = {
+          id: key,
+          name,
+          start_date: line.starts_at,
+          end_date: line.ends_at,
+          location,
+          product_id: line.product_id,
+          duration,
+          retreat_type: retreatType
+        };
+      }
+    });
 
-                const uniqueMap = {};
+    const retreatList = Object.values(unique).sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
 
-                availabilities.forEach(item => {
-                    // parse start/end robustly
-                    const startDate = parseDateFromItem(item, startFields);
-                    const endDate = parseDateFromItem(item, endFields);
+    if (retreatList.length === 0) {
+      setError('No upcoming retreats found via booking lines.');
+    }
 
-                    if (!startDate || !endDate) {
-                        // skip entries we can't parse
-                        return;
-                    }
+    setRetreats(retreatList);
+    setSelectedRetreats(retreatList.map(r => r.id));
+    setStep('customize');
+  } catch (err) {
+    console.error(err);
+    setError(err.message || 'Error fetching retreats');
+  } finally {
+    setLoading(false);
+  }
+};
 
-                    // only include future or today starting retreats
-                    if (startDate < today) return;
-
-                    // product id (if available)
-                    let productId;
-                    for (const f of productIdFields) {
-                        if (item[f] !== undefined) { productId = item[f]; break; }
-                    }
-
-                    // read human name if present
-                    let humanName = '';
-                    for (const f of nameFields) {
-                        if (item[f]) { humanName = item[f]; break; }
-                    }
-                    if (!humanName && productId && productMap[productId]) {
-                        humanName = productMap[productId].name || productMap[productId].title || '';
-                    }
-
-                    // location
-                    let location = '';
-                    for (const f of locationFields) {
-                        if (item[f]) { location = item[f]; break; }
-                    }
-                    if (!location && productId && productMap[productId]) {
-                        location = productMap[productId].location || productMap[productId].category || '';
-                    }
-
-                    // create unique key (product + start)
-                    const key = `${productId || 'no_product'}_${startDate.toISOString().split('T')[0]}`;
-
-                    if (!uniqueMap[key]) {
-                        const durationDays = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)));
-                        let retreatType = `${durationDays} nights`;
-                        if (durationDays === 3) retreatType = 'Weekend';
-                        else if (durationDays === 4) retreatType = 'Mid-Week';
-                        else if (durationDays >= 7) retreatType = 'Holiday';
-
-                        uniqueMap[key] = {
-                            id: key,
-                            raw_id: item.id || null, // preserve original id if useful
-                            name: humanName || (productMap[productId] && (productMap[productId].name || productMap[productId].title)) || `Retreat (${retreatType})`,
-                            start_date: startDate.toISOString(),
-                            end_date: endDate.toISOString(),
-                            location: location || 'Unknown',
-                            product_id: productId || null,
-                            duration: durationDays,
-                            retreat_type: retreatType,
-                            original: item
-                        };
-                    }
-                });
 
                 const retreatList = Object.values(uniqueMap).sort((a,b) => new Date(a.start_date) - new Date(b.start_date));
 
