@@ -257,6 +257,370 @@
             ]
         };
 
+        // Pre-loaded retreat data from Adventure Yogi website
+        const ADVENTURE_YOGI_RETREATS = [
+            {
+                id: "retreat_2025_01",
+                name: "Adventure Yogi Retreat",
+                start_date: "2025-10-24",
+                end_date: "2025-10-27",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2025_02",
+                name: "Adventure Yogi Retreat",
+                start_date: "2025-10-27",
+                end_date: "2025-10-31",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2025_03",
+                name: "Adventure Yogi Retreat",
+                start_date: "2025-11-07",
+                end_date: "2025-11-10",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2025_04",
+                name: "Adventure Yogi Retreat",
+                start_date: "2025-11-10",
+                end_date: "2025-11-14",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2025_05",
+                name: "Adventure Yogi Retreat",
+                start_date: "2025-11-14",
+                end_date: "2025-11-17",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2025_06",
+                name: "Adventure Yogi Retreat",
+                start_date: "2025-11-17",
+                end_date: "2025-11-21",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2025_07",
+                name: "Adventure Yogi Retreat",
+                start_date: "2025-12-29",
+                end_date: "2026-01-02",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Holiday"
+            },
+            {
+                id: "retreat_2026_01",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-01-02",
+                end_date: "2026-01-05",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_02",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-02-06",
+                end_date: "2026-02-09",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_03",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-02-09",
+                end_date: "2026-02-13",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_04",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-02-20",
+                end_date: "2026-02-23",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_05",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-02-23",
+                end_date: "2026-02-27",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_06",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-03-06",
+                end_date: "2026-03-09",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_07",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-03-09",
+                end_date: "2026-03-13",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_08",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-03-13",
+                end_date: "2026-03-16",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_09",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-03-16",
+                end_date: "2026-03-20",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_10",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-03-27",
+                end_date: "2026-03-30",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_11",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-03-30",
+                end_date: "2026-04-03",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_12",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-04-17",
+                end_date: "2026-04-20",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_13",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-04-20",
+                end_date: "2026-04-24",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_14",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-05-15",
+                end_date: "2026-05-18",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_15",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-05-18",
+                end_date: "2026-05-22",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_16",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-06-12",
+                end_date: "2026-06-15",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_17",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-06-15",
+                end_date: "2026-06-19",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_18",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-07-10",
+                end_date: "2026-07-13",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_19",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-07-13",
+                end_date: "2026-07-17",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_20",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-07-17",
+                end_date: "2026-07-20",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_21",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-07-20",
+                end_date: "2026-07-24",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_22",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-08-14",
+                end_date: "2026-08-17",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_23",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-08-17",
+                end_date: "2026-08-21",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_24",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-08-21",
+                end_date: "2026-08-24",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_25",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-08-24",
+                end_date: "2026-08-28",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_26",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-09-18",
+                end_date: "2026-09-21",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_27",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-09-21",
+                end_date: "2026-09-25",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_28",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-10-16",
+                end_date: "2026-10-19",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_29",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-10-19",
+                end_date: "2026-10-23",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_30",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-10-23",
+                end_date: "2026-10-26",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_31",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-10-26",
+                end_date: "2026-10-30",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            },
+            {
+                id: "retreat_2026_32",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-11-06",
+                end_date: "2026-11-09",
+                location: "TBD",
+                duration: 4,
+                retreat_type: "Weekend"
+            },
+            {
+                id: "retreat_2026_33",
+                name: "Adventure Yogi Retreat",
+                start_date: "2026-11-09",
+                end_date: "2026-11-13",
+                location: "TBD",
+                duration: 5,
+                retreat_type: "Mid-Week"
+            }
+        ];
+
         const CHANNEL_COLORS = {
             'Instagram': 'bg-pink-100 text-pink-700',
             'Facebook': 'bg-blue-100 text-blue-700',
@@ -276,149 +640,32 @@
         };
 
         function App() {
-            const [step, setStep] = useState('connect'); // connect, customize, generate
-            const [bookinglayerToken, setBookinglayerToken] = useState('');
-            const [filterFromDate, setFilterFromDate] = useState('2025-01-01');
-            const [retreats, setRetreats] = useState([]);
-            const [selectedRetreats, setSelectedRetreats] = useState([]);
+            const [step, setStep] = useState('customize'); // Skip connect step since we have data
+            const [retreats, setRetreats] = useState(ADVENTURE_YOGI_RETREATS);
+            const [selectedRetreats, setSelectedRetreats] = useState(ADVENTURE_YOGI_RETREATS.map(r => r.id));
             const [tasks, setTasks] = useState(DEFAULT_TASKS);
-            const [loading, setLoading] = useState(false);
-            const [loadingProgress, setLoadingProgress] = useState('');
             const [error, setError] = useState('');
 
-            const fetchRetreats = async () => {
-                if (!bookinglayerToken) {
-                    setError('Please enter your Bookinglayer API token');
-                    return;
-                }
+            useEffect(() => {
+                // Filter retreats to only show future dates
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const futureRetreats = ADVENTURE_YOGI_RETREATS.filter(retreat => {
+                    const startDate = new Date(retreat.start_date);
+                    return startDate >= today;
+                });
+                
+                setRetreats(futureRetreats);
+                setSelectedRetreats(futureRetreats.map(r => r.id));
+            }, []);
 
-                setLoading(true);
-                setError('');
-
-                try {
-                    // Get today's date in UTC format for filtering
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    
-                    setLoadingProgress('Fetching retreat packages from Bookinglayer...');
-                    
-                    // Fetch ALL products (retreat packages) with pagination
-                    let allProducts = [];
-                    let currentPage = 1;
-                    let hasMorePages = true;
-                    
-                    console.log(`Fetching products (retreat packages)...`);
-                    
-                    while (hasMorePages) {
-                        const productsResponse = await fetch(`https://api.bookinglayer.io/private/products?page=${currentPage}`, {
-                            headers: {
-                                'Authorization': `Bearer ${bookinglayerToken}`,
-                                'Content-Type': 'application/json'
-                            }
-                        });
-
-                        if (!productsResponse.ok) {
-                            throw new Error('Failed to fetch retreats. Check your API token.');
-                        }
-
-                        const productsData = await productsResponse.json();
-                        const pageData = productsData.data || [];
-                        allProducts = allProducts.concat(pageData);
-                        
-                        setLoadingProgress(`Fetched ${allProducts.length} products (page ${currentPage}${productsData.meta ? ' of ' + productsData.meta.last_page : ''})...`);
-                        
-                        console.log(`Page ${currentPage}: ${pageData.length} products`);
-                        
-                        // Check if there are more pages
-                        if (productsData.meta) {
-                            hasMorePages = productsData.meta.current_page < productsData.meta.last_page;
-                            currentPage++;
-                        } else {
-                            hasMorePages = false;
-                        }
-                    }
-                    
-                    console.log('Total products fetched:', allProducts.length);
-                    console.log('Sample product:', allProducts[0]);
-                    
-                    setLoadingProgress('Fetching availability schedules...');
-                    
-                    // Now fetch availability for products that have schedules
-                    let allRetreats = [];
-                    
-                    for (let i = 0; i < allProducts.length; i++) {
-                        const product = allProducts[i];
-                        
-                        if (i % 10 === 0) {
-                            setLoadingProgress(`Checking availability for products... (${i}/${allProducts.length})`);
-                        }
-                        
-                        // Fetch availability/schedule for this product
-                        try {
-                            const availResponse = await fetch(`https://api.bookinglayer.io/private/products/${product.id}/availability`, {
-                                headers: {
-                                    'Authorization': `Bearer ${bookinglayerToken}`,
-                                    'Content-Type': 'application/json'
-                                }
-                            });
-                            
-                            if (availResponse.ok) {
-                                const availData = await availResponse.json();
-                                const availability = availData.data || [];
-                                
-                                // Each availability slot is a scheduled retreat
-                                availability.forEach(slot => {
-                                    const startDate = new Date(slot.starts_at?.replace(' ', 'T') || slot.start_date?.replace(' ', 'T'));
-                                    const filterDate = new Date(filterFromDate);
-                                    
-                                    // Only include if on or after filter date
-                                    if (startDate >= filterDate) {
-                                        const endDate = new Date(slot.ends_at?.replace(' ', 'T') || slot.end_date?.replace(' ', 'T'));
-                                        const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-                                        
-                                        let retreatType = '';
-                                        if (duration === 3) retreatType = 'Weekend';
-                                        else if (duration === 4) retreatType = 'Mid-Week';
-                                        else if (duration >= 7) retreatType = 'Holiday';
-                                        else retreatType = `${duration} nights`;
-                                        
-                                        allRetreats.push({
-                                            id: `${product.id}_${slot.starts_at || slot.start_date}`,
-                                            name: product.name || product.title || 'Retreat',
-                                            start_date: slot.starts_at || slot.start_date,
-                                            end_date: slot.ends_at || slot.end_date,
-                                            location: product.location || product.category || 'Unknown',
-                                            product_id: product.id,
-                                            duration: duration,
-                                            retreat_type: retreatType
-                                        });
-                                    }
-                                });
-                            }
-                        } catch (err) {
-                            console.log(`No availability for product ${product.id}`);
-                        }
-                    }
-                    
-                    console.log('Total retreats found:', allRetreats.length);
-                    
-                    const retreatList = allRetreats.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
-
-                    console.log('Final retreat list:', retreatList);
-
-                    if (retreatList.length === 0) {
-                        setError(`No retreats found with dates from ${filterFromDate} onwards. Try adjusting the filter date.`);
-                    }
-
-                    setRetreats(retreatList);
-                    setSelectedRetreats(retreatList.map(r => r.id));
-                    setStep('customize');
-                } catch (err) {
-                    setError(err.message);
-                } finally {
-                    setLoading(false);
-                    setLoadingProgress('');
-                }
+            const updateRetreatDetails = (retreatId, field, value) => {
+                setRetreats(prev => prev.map(retreat => 
+                    retreat.id === retreatId 
+                        ? { ...retreat, [field]: value }
+                        : retreat
+                ));
             };
 
             const toggleTask = (category, taskId) => {
@@ -472,12 +719,12 @@
                     const retreat = retreats.find(r => r.id === retreatId);
                     if (!retreat) return;
 
-                    const startDate = new Date(retreat.start_date.replace(' ', 'T'));
-                    const endDate = new Date(retreat.end_date.replace(' ', 'T'));
+                    const startDate = new Date(retreat.start_date);
+                    const endDate = new Date(retreat.end_date);
 
                     // Milestone
-                    const milestoneNotes = `Retreat: ${retreat.location} | ${retreat.retreat_type} (${retreat.duration} nights) | ${retreat.start_date} to ${retreat.end_date}`;
-                    csv += `"🧘 ${retreat.name}","${formatDate(startDate)}","${formatDate(startDate)}","${milestoneNotes}","milestone,retreat,${retreat.retreat_type}"\n`;
+                    const milestoneNotes = `Retreat: ${retreat.name} | ${retreat.location} | ${retreat.retreat_type} (${retreat.duration} days) | ${retreat.start_date} to ${retreat.end_date}`;
+                    csv += `"🧘 ${retreat.name} - ${retreat.location}","${formatDate(startDate)}","${formatDate(startDate)}","${milestoneNotes}","milestone,retreat,${retreat.retreat_type}"\n`;
 
                     // Add tasks
                     Object.entries(tasks).forEach(([category, taskList]) => {
@@ -496,8 +743,8 @@
                             }
 
                             const channels = task.channels.join(', ');
-                            const notes = `${retreat.name} (${retreat.retreat_type}) | ${task.description} | Channels: ${channels} | Pillar: ${task.pillar}`;
-                            const tags = `${retreat.name},${task.pillar},${category},${retreat.retreat_type}`;
+                            const notes = `${retreat.name} - ${retreat.location} (${retreat.retreat_type}) | ${task.description} | Channels: ${channels} | Pillar: ${task.pillar}`;
+                            const tags = `${retreat.name},${retreat.location},${task.pillar},${category},${retreat.retreat_type}`;
 
                             csv += `"${task.name}","${formatDate(startDate)}","${formatDate(dueDate)}","${notes}","${tags}"\n`;
                         });
@@ -522,7 +769,7 @@
             };
 
             const formatDisplayDate = (dateStr) => {
-                const date = new Date(dateStr.replace(' ', 'T'));
+                const date = new Date(dateStr);
                 return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
             };
 
@@ -533,95 +780,30 @@
                         <div className="max-w-7xl mx-auto">
                             <h1 className="text-4xl font-bold mb-2">🧘 Adventure Yogi</h1>
                             <p className="text-xl opacity-90">Retreat Marketing Planner</p>
+                            <div className="bg-white bg-opacity-20 rounded-lg p-4 mt-4">
+                                <p className="text-sm">
+                                    📅 Loaded {retreats.length} upcoming retreats from your calendar
+                                </p>
+                            </div>
                         </div>
                     </div>
 
                     {/* Progress Steps */}
                     <div className="max-w-7xl mx-auto px-4 py-8">
                         <div className="flex items-center justify-center space-x-4 mb-8">
-                            <Step number="1" label="Connect" active={step === 'connect'} completed={step !== 'connect'} />
+                            <Step number="1" label="Select Retreats" active={step === 'customize'} completed={step === 'generate'} />
                             <div className="w-16 h-1 bg-gray-300"></div>
-                            <Step number="2" label="Customize" active={step === 'customize'} completed={step === 'generate'} />
+                            <Step number="2" label="Customize Tasks" active={step === 'customize'} />
                             <div className="w-16 h-1 bg-gray-300"></div>
                             <Step number="3" label="Generate" active={step === 'generate'} />
                         </div>
 
-                        {/* Step 1: Connect to Bookinglayer */}
-                        {step === 'connect' && (
-                            <div className="max-w-2xl mx-auto">
-                                <div className="bg-white rounded-lg shadow-lg p-8">
-                                    <h2 className="text-2xl font-bold mb-4">Connect to Bookinglayer</h2>
-                                    <p className="text-gray-600 mb-6">
-                                        Enter your Bookinglayer API token to fetch your upcoming retreat schedules.
-                                    </p>
-
-                                    {error && (
-                                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-                                            <strong>Error:</strong> {error}
-                                            {error.includes('No upcoming retreats') && (
-                                                <p className="mt-2 text-sm">
-                                                    This app only shows retreats starting from today onwards. If all your retreats are in the past, no retreats will be displayed.
-                                                </p>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium mb-2">
-                                            Bookinglayer API Token
-                                        </label>
-                                        <input
-                                            type="password"
-                                            value={bookinglayerToken}
-                                            onChange={(e) => setBookinglayerToken(e.target.value)}
-                                            placeholder="Enter your API token..."
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                        />
-                                        <p className="text-sm text-gray-500 mt-2">
-                                            Get your token from: Bookinglayer → Settings → API → Tokens
-                                        </p>
-                                    </div>
-
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium mb-2">
-                                            Fetch Retreats From Date
-                                        </label>
-                                        <input
-                                            type="date"
-                                            value={filterFromDate}
-                                            onChange={(e) => setFilterFromDate(e.target.value)}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                        />
-                                        <p className="text-sm text-gray-500 mt-2">
-                                            Only retreats starting on or after this date will be fetched. Default is 2025-01-01.
-                                        </p>
-                                    </div>
-
-                                    {loading && loadingProgress && (
-                                        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                                            <div className="flex items-center">
-                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-3"></div>
-                                                <span className="text-sm text-blue-800">{loadingProgress}</span>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <button
-                                        onClick={fetchRetreats}
-                                        disabled={loading}
-                                        className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {loading ? 'Fetching Retreats...' : 'Fetch Retreats →'}
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Step 2: Customize Tasks */}
+                        {/* Step 1 & 2: Select & Customize */}
                         {step === 'customize' && (
                             <div>
+                                {/* Retreat Selection & Editing */}
                                 <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-                                    <h2 className="text-2xl font-bold mb-4">Select Retreats</h2>
+                                    <h2 className="text-2xl font-bold mb-4">Select & Edit Retreats</h2>
                                     <div className="flex justify-between items-center mb-4">
                                         <div>
                                             <span className="text-lg font-medium text-purple-600">
@@ -650,42 +832,25 @@
                                     {retreats.length === 0 ? (
                                         <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded">
                                             <p className="font-medium">No upcoming retreats found</p>
-                                            <p className="text-sm mt-1">Make sure you have retreats scheduled in Bookinglayer starting from today or in the future.</p>
+                                            <p className="text-sm mt-1">Make sure you have retreats scheduled starting from today or in the future.</p>
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 gap-4">
                                             {retreats.map(retreat => (
-                                                <div key={retreat.id} className="border rounded-lg p-4 hover:border-purple-500 transition">
-                                                    <label className="flex items-start cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedRetreats.includes(retreat.id)}
-                                                            onChange={(e) => {
-                                                                if (e.target.checked) {
-                                                                    setSelectedRetreats([...selectedRetreats, retreat.id]);
-                                                                } else {
-                                                                    setSelectedRetreats(selectedRetreats.filter(id => id !== retreat.id));
-                                                                }
-                                                            }}
-                                                            className="mt-1 mr-3"
-                                                        />
-                                                        <div className="flex-1">
-                                                            <div className="font-medium">{retreat.name}</div>
-                                                            <div className="text-sm text-gray-600">{retreat.location}</div>
-                                                            <div className="flex items-center gap-2 mt-1">
-                                                                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
-                                                                    {retreat.retreat_type}
-                                                                </span>
-                                                                <span className="text-xs text-gray-500">
-                                                                    {retreat.duration} nights
-                                                                </span>
-                                                            </div>
-                                                            <div className="text-sm text-gray-500 mt-1">
-                                                                {formatDisplayDate(retreat.start_date)} - {formatDisplayDate(retreat.end_date)}
-                                                            </div>
-                                                        </div>
-                                                    </label>
-                                                </div>
+                                                <RetreatCard
+                                                    key={retreat.id}
+                                                    retreat={retreat}
+                                                    isSelected={selectedRetreats.includes(retreat.id)}
+                                                    onSelect={(selected) => {
+                                                        if (selected) {
+                                                            setSelectedRetreats([...selectedRetreats, retreat.id]);
+                                                        } else {
+                                                            setSelectedRetreats(selectedRetreats.filter(id => id !== retreat.id));
+                                                        }
+                                                    }}
+                                                    onUpdate={(field, value) => updateRetreatDetails(retreat.id, field, value)}
+                                                    formatDisplayDate={formatDisplayDate}
+                                                />
                                             ))}
                                         </div>
                                     )}
@@ -693,13 +858,7 @@
 
                                 <TaskCustomizer tasks={tasks} setTasks={setTasks} addTask={addTask} removeTask={removeTask} updateTask={updateTask} toggleTask={toggleTask} />
 
-                                <div className="flex justify-between mt-8">
-                                    <button
-                                        onClick={() => setStep('connect')}
-                                        className="px-6 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
-                                    >
-                                        ← Back
-                                    </button>
+                                <div className="flex justify-end mt-8">
                                     <button
                                         onClick={() => setStep('generate')}
                                         disabled={selectedRetreats.length === 0}
@@ -724,14 +883,14 @@
                                             <div>✅ <strong>{Object.values(tasks).flat().filter(t => t.enabled !== false).length}</strong> marketing tasks per retreat</div>
                                             <div>📊 <strong>{selectedRetreats.length * Object.values(tasks).flat().filter(t => t.enabled !== false).length}</strong> total tasks will be created</div>
                                             <div className="text-sm text-gray-600 mt-3 pt-3 border-t">
-                                                Retreats: {retreats.filter(r => selectedRetreats.includes(r.id)).map(r => r.retreat_type).reduce((acc, type) => {
-                                                    acc[type] = (acc[type] || 0) + 1;
-                                                    return acc;
-                                                }, {})} 
-                                                {Object.entries(retreats.filter(r => selectedRetreats.includes(r.id)).map(r => r.retreat_type).reduce((acc, type) => {
-                                                    acc[type] = (acc[type] || 0) + 1;
-                                                    return acc;
-                                                }, {})).map(([type, count]) => `${count} ${type}`).join(', ')}
+                                                Retreats: {(() => {
+                                                    const types = retreats.filter(r => selectedRetreats.includes(r.id))
+                                                        .reduce((acc, r) => {
+                                                            acc[r.retreat_type] = (acc[r.retreat_type] || 0) + 1;
+                                                            return acc;
+                                                        }, {});
+                                                    return Object.entries(types).map(([type, count]) => `${count} ${type}`).join(', ');
+                                                })()}
                                             </div>
                                         </div>
                                     </div>
@@ -768,10 +927,8 @@
                                         </button>
                                         <button
                                             onClick={() => {
-                                                setStep('connect');
-                                                setBookinglayerToken('');
-                                                setRetreats([]);
-                                                setSelectedRetreats([]);
+                                                setStep('customize');
+                                                setSelectedRetreats(retreats.map(r => r.id));
                                                 setTasks(DEFAULT_TASKS);
                                             }}
                                             className="px-6 py-3 text-purple-600 font-medium hover:underline"
@@ -782,6 +939,92 @@
                                 </div>
                             </div>
                         )}
+                    </div>
+                </div>
+            );
+        }
+
+        function RetreatCard({ retreat, isSelected, onSelect, onUpdate, formatDisplayDate }) {
+            const [isEditing, setIsEditing] = useState(false);
+
+            return (
+                <div className={`border rounded-lg p-4 transition ${isSelected ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}>
+                    <div className="flex items-start justify-between">
+                        <label className="flex items-start cursor-pointer flex-1">
+                            <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={(e) => onSelect(e.target.checked)}
+                                className="mt-1 mr-3"
+                            />
+                            <div className="flex-1">
+                                {isEditing ? (
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Retreat Name</label>
+                                            <input
+                                                type="text"
+                                                value={retreat.name}
+                                                onChange={(e) => onUpdate('name', e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                            <input
+                                                type="text"
+                                                value={retreat.location}
+                                                onChange={(e) => onUpdate('location', e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                                                placeholder="e.g., Cornwall, Sri Lanka, Costa Rica"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                                                <input
+                                                    type="date"
+                                                    value={retreat.start_date}
+                                                    onChange={(e) => onUpdate('start_date', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                                                <input
+                                                    type="date"
+                                                    value={retreat.end_date}
+                                                    onChange={(e) => onUpdate('end_date', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <div className="font-medium text-lg">{retreat.name}</div>
+                                        <div className="text-gray-600">{retreat.location}</div>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                                                {retreat.retreat_type}
+                                            </span>
+                                            <span className="text-xs text-gray-500">
+                                                {retreat.duration} days
+                                            </span>
+                                        </div>
+                                        <div className="text-sm text-gray-500 mt-1">
+                                            {formatDisplayDate(retreat.start_date)} - {formatDisplayDate(retreat.end_date)}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </label>
+                        <button
+                            onClick={() => setIsEditing(!isEditing)}
+                            className="ml-3 text-sm text-purple-600 hover:text-purple-700 p-2"
+                        >
+                            {isEditing ? '✓' : '✏️'}
+                        </button>
                     </div>
                 </div>
             );
