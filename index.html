@@ -300,53 +300,14 @@
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     
-                    setLoadingProgress('Fetching booking lines from Bookinglayer...');
+                    setLoadingProgress('Fetching retreat packages from Bookinglayer...');
                     
-                    // Fetch ALL booking lines from filterFromDate onwards (with pagination)
-                    let allBookingLines = [];
+                    // Fetch ALL products (retreat packages) with pagination
+                    let allProducts = [];
                     let currentPage = 1;
                     let hasMorePages = true;
                     
-                    console.log(`Fetching booking lines from ${filterFromDate} onwards...`);
-                    
-                    while (hasMorePages) {
-                        const bookingResponse = await fetch(`https://api.bookinglayer.io/private/booking_lines?page=${currentPage}&filter[starts_at_from]=${filterFromDate}`, {
-                            headers: {
-                                'Authorization': `Bearer ${bookinglayerToken}`,
-                                'Content-Type': 'application/json'
-                            }
-                        });
-
-                        if (!bookingResponse.ok) {
-                            throw new Error('Failed to fetch retreats. Check your API token.');
-                        }
-
-                        const bookingData = await bookingResponse.json();
-                        const pageData = bookingData.data || [];
-                        allBookingLines = allBookingLines.concat(pageData);
-                        
-                        setLoadingProgress(`Fetched ${allBookingLines.length} booking lines (page ${currentPage}${bookingData.meta ? ' of ' + bookingData.meta.last_page : ''})...`);
-                        
-                        console.log(`Page ${currentPage}: ${pageData.length} booking lines`);
-                        
-                        // Check if there are more pages
-                        if (bookingData.meta) {
-                            hasMorePages = bookingData.meta.current_page < bookingData.meta.last_page;
-                            currentPage++;
-                        } else {
-                            hasMorePages = false;
-                        }
-                    }
-                    
-                    console.log('Total booking lines fetched:', allBookingLines.length);
-                    setLoadingProgress(`Loaded ${allBookingLines.length} booking lines. Now fetching product details...`);
-                    
-                    // Fetch ALL products (with pagination)
-                    let allProducts = [];
-                    currentPage = 1;
-                    hasMorePages = true;
-                    
-                    console.log('Fetching products...');
+                    console.log(`Fetching products (retreat packages)...`);
                     
                     while (hasMorePages) {
                         const productsResponse = await fetch(`https://api.bookinglayer.io/private/products?page=${currentPage}`, {
@@ -356,11 +317,15 @@
                             }
                         });
 
+                        if (!productsResponse.ok) {
+                            throw new Error('Failed to fetch retreats. Check your API token.');
+                        }
+
                         const productsData = await productsResponse.json();
                         const pageData = productsData.data || [];
                         allProducts = allProducts.concat(pageData);
                         
-                        setLoadingProgress(`Loaded ${allProducts.length} products (page ${currentPage}${productsData.meta ? ' of ' + productsData.meta.last_page : ''})...`);
+                        setLoadingProgress(`Fetched ${allProducts.length} products (page ${currentPage}${productsData.meta ? ' of ' + productsData.meta.last_page : ''})...`);
                         
                         console.log(`Page ${currentPage}: ${pageData.length} products`);
                         
@@ -374,70 +339,75 @@
                     }
                     
                     console.log('Total products fetched:', allProducts.length);
-                    setLoadingProgress('Processing retreats...');
+                    console.log('Sample product:', allProducts[0]);
                     
-                    const productMap = {};
-                    allProducts.forEach(p => {
-                        productMap[p.id] = p;
-                    });
-
-                    // Parse unique retreats from booking lines
-                    const uniqueRetreats = {};
+                    setLoadingProgress('Fetching availability schedules...');
                     
-                    console.log('Today:', today);
-                    console.log('Filtering booking lines...');
+                    // Now fetch availability for products that have schedules
+                    let allRetreats = [];
                     
-                    allBookingLines.forEach((line, index) => {
-                        if (index < 3) console.log(`Booking line ${index}:`, line);
+                    for (let i = 0; i < allProducts.length; i++) {
+                        const product = allProducts[i];
                         
-                        const startDate = new Date(line.starts_at.replace(' ', 'T'));
-                        const isFuture = startDate >= today;
-                        
-                        if (index < 3) {
-                            console.log(`  starts_at: ${line.starts_at}`);
-                            console.log(`  parsed date: ${startDate}`);
-                            console.log(`  is future? ${isFuture}`);
+                        if (i % 10 === 0) {
+                            setLoadingProgress(`Checking availability for products... (${i}/${allProducts.length})`);
                         }
                         
-                        // Only include future retreats
-                        if (isFuture) {
-                            const key = `${line.product_id}_${line.starts_at}`;
+                        // Fetch availability/schedule for this product
+                        try {
+                            const availResponse = await fetch(`https://api.bookinglayer.io/private/products/${product.id}/availability`, {
+                                headers: {
+                                    'Authorization': `Bearer ${bookinglayerToken}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            });
                             
-                            if (!uniqueRetreats[key]) {
-                                const product = productMap[line.product_id] || {};
-                                const endDate = new Date(line.ends_at.replace(' ', 'T'));
-                                const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                            if (availResponse.ok) {
+                                const availData = await availResponse.json();
+                                const availability = availData.data || [];
                                 
-                                let retreatType = '';
-                                if (duration === 3) retreatType = 'Weekend';
-                                else if (duration === 4) retreatType = 'Mid-Week';
-                                else if (duration >= 7) retreatType = 'Holiday';
-                                else retreatType = `${duration} nights`;
-                                
-                                const name = product.name || product.title || `Retreat - ${retreatType}`;
-                                
-                                uniqueRetreats[key] = {
-                                    id: key,
-                                    name: name,
-                                    start_date: line.starts_at,
-                                    end_date: line.ends_at,
-                                    location: product.location || product.category || 'Unknown',
-                                    product_id: line.product_id,
-                                    duration: duration,
-                                    retreat_type: retreatType
-                                };
+                                // Each availability slot is a scheduled retreat
+                                availability.forEach(slot => {
+                                    const startDate = new Date(slot.starts_at?.replace(' ', 'T') || slot.start_date?.replace(' ', 'T'));
+                                    const filterDate = new Date(filterFromDate);
+                                    
+                                    // Only include if on or after filter date
+                                    if (startDate >= filterDate) {
+                                        const endDate = new Date(slot.ends_at?.replace(' ', 'T') || slot.end_date?.replace(' ', 'T'));
+                                        const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                                        
+                                        let retreatType = '';
+                                        if (duration === 3) retreatType = 'Weekend';
+                                        else if (duration === 4) retreatType = 'Mid-Week';
+                                        else if (duration >= 7) retreatType = 'Holiday';
+                                        else retreatType = `${duration} nights`;
+                                        
+                                        allRetreats.push({
+                                            id: `${product.id}_${slot.starts_at || slot.start_date}`,
+                                            name: product.name || product.title || 'Retreat',
+                                            start_date: slot.starts_at || slot.start_date,
+                                            end_date: slot.ends_at || slot.end_date,
+                                            location: product.location || product.category || 'Unknown',
+                                            product_id: product.id,
+                                            duration: duration,
+                                            retreat_type: retreatType
+                                        });
+                                    }
+                                });
                             }
+                        } catch (err) {
+                            console.log(`No availability for product ${product.id}`);
                         }
-                    });
+                    }
+                    
+                    console.log('Total retreats found:', allRetreats.length);
+                    
+                    const retreatList = allRetreats.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
 
-                    const retreatList = Object.values(uniqueRetreats)
-                        .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
-
-                    console.log('Unique future retreats found:', Object.keys(uniqueRetreats).length);
                     console.log('Final retreat list:', retreatList);
 
                     if (retreatList.length === 0) {
-                        setError('No upcoming retreats found. All retreats may be in the past.');
+                        setError(`No retreats found with dates from ${filterFromDate} onwards. Try adjusting the filter date.`);
                     }
 
                     setRetreats(retreatList);
