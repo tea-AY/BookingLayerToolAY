@@ -19,10 +19,6 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         
-        .gradient-orange {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        
         .task-card {
             transition: all 0.3s ease;
         }
@@ -31,27 +27,15 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        
-        .pill {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .emoji-icon {
-            font-size: 1.5rem;
-        }
     </style>
 </head>
 <body class="bg-gray-50">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState } = React;
 
-        // Default Marketing Tasks Template
+        // Default Marketing Tasks
         const DEFAULT_TASKS = {
             pre_launch: [
                 {
@@ -59,7 +43,7 @@
                     name: "🎥 Create 'Yogi Stories' content",
                     channels: ['Instagram', 'Facebook'],
                     days_before: 60,
-                    description: "Record authentic guest voices about why they came on retreat. Raw, emotive content.",
+                    description: "Record authentic guest voices about why they came on retreat",
                     pillar: 'EXPLORE'
                 },
                 {
@@ -67,7 +51,7 @@
                     name: "📸 Prepare 'Local Stories' content",
                     channels: ['Instagram', 'Facebook', 'Email', 'Website'],
                     days_before: 55,
-                    description: "Showcase myths, legends and local traditions from retreat location.",
+                    description: "Showcase myths, legends and local traditions",
                     pillar: 'EXPLORE'
                 },
                 {
@@ -75,7 +59,7 @@
                     name: "🍽️ Create 'Food for Soul' post",
                     channels: ['Instagram', 'Email', 'Website'],
                     days_before: 50,
-                    description: "Feature plant-based meals with simplified recipes. Tag chefs.",
+                    description: "Feature plant-based meals with recipes",
                     pillar: 'ALIGN'
                 },
                 {
@@ -83,654 +67,220 @@
                     name: "📧 Early Bird Email Campaign",
                     channels: ['Email'],
                     days_before: 45,
-                    description: "Launch early bird offer (3 weeks before price increase).",
+                    description: "Launch early bird offer",
                     pillar: 'SELL'
-                },
+                }
+            ],
+            launch: [
                 {
-                    id: 'pl5',
-                    name: "📱 Instagram Story Series",
-                    channels: ['Instagram'],
-                    days_before: 40,
-                    description: "Behind-the-scenes retreat preparation content.",
-                    pillar: 'EXPLORE'
-                },
-                {
-                    id: 'pl6',
+                    id: 'l1',
                     name: "🌟 Social Media Announcements",
                     channels: ['Instagram', 'Facebook'],
                     days_before: 35,
-                    description: "Official retreat announcement with dates and booking link.",
-                    pillar: 'EXPLORE'
-                }
-            ],
-            promotional: [
-                {
-                    id: 'pr1',
-                    name: "📧 Mid-Campaign Email",
-                    channels: ['Email'],
-                    days_before: 30,
-                    description: "Update on remaining availability and guest excitement.",
-                    pillar: 'ALIGN'
-                },
-                {
-                    id: 'pr2',
-                    name: "📸 'Here and Now' UGC Carousel",
-                    channels: ['Instagram', 'Facebook', 'Email'],
-                    days_before: 25,
-                    description: "Curate best shots from previous retreats. Celebrate community.",
-                    pillar: 'ALIGN'
-                },
-                {
-                    id: 'pr3',
-                    name: "🎬 Create Reel/Video Preview",
-                    channels: ['Instagram', 'Facebook'],
-                    days_before: 20,
-                    description: "Dynamic video showcasing yoga, location, community.",
-                    pillar: 'EXPLORE'
-                },
-                {
-                    id: 'pr4',
-                    name: "📧 Last Chance Email",
-                    channels: ['Email'],
-                    days_before: 14,
-                    description: "Final call for remaining spaces with testimonials.",
+                    description: "Announce retreat with key details",
                     pillar: 'SELL'
-                },
-                {
-                    id: 'pr5',
-                    name: "📱 Instagram Stories Countdown",
-                    channels: ['Instagram'],
-                    days_before: 14,
-                    description: "Start countdown. Share packing tips and excitement.",
-                    pillar: 'ALIGN'
                 }
             ],
-            pre_retreat: [
+            ongoing: [
                 {
-                    id: 'prer1',
-                    name: "📧 Welcome Pack Email",
+                    id: 'o1',
+                    name: "📱 Weekly Instagram Stories",
+                    channels: ['Instagram'],
+                    days_before: 30,
+                    description: "Behind-the-scenes content",
+                    pillar: 'EXPLORE'
+                }
+            ],
+            final_push: [
+                {
+                    id: 'fp1',
+                    name: "⏰ Last Chance Email",
                     channels: ['Email'],
-                    days_before: 28,
-                    description: "Send comprehensive welcome pack with all retreat details.",
-                    pillar: 'ALIGN'
-                },
-                {
-                    id: 'prer2',
-                    name: "💬 Create WhatsApp Group",
-                    channels: ['WhatsApp'],
-                    days_before: 21,
-                    description: "Set up group for guests to connect and arrange logistics.",
-                    pillar: 'ALIGN'
-                },
-                {
-                    id: 'prer3',
-                    name: "📸 Share Packing Guide",
-                    channels: ['Instagram', 'Facebook'],
-                    days_before: 10,
-                    description: "Helpful content about what to pack for this retreat.",
-                    pillar: 'EXPLORE'
-                },
-                {
-                    id: 'prer4',
-                    name: "🎬 Meet Your Teachers",
-                    channels: ['Instagram'],
                     days_before: 7,
-                    description: "Introduce yoga teachers and facilitators.",
-                    pillar: 'ALIGN'
-                }
-            ],
-            during_retreat: [
-                {
-                    id: 'dur1',
-                    name: "📸 Film Camera Setup",
-                    channels: ['On-site'],
-                    days_before: 0,
-                    description: "Place cameras with invitation for guests to capture moments.",
-                    pillar: 'ALIGN'
-                },
-                {
-                    id: 'dur2',
-                    name: "📱 Live Instagram Stories",
-                    channels: ['Instagram'],
-                    days_before: 0,
-                    description: "Share live stories from retreat (with permission).",
-                    pillar: 'EXPLORE'
-                },
-                {
-                    id: 'dur3',
-                    name: "📸 Professional Content Shoot",
-                    channels: ['All'],
-                    days_before: 0,
-                    description: "Capture photos/video for future marketing.",
-                    pillar: 'ALL'
+                    description: "Final call for bookings",
+                    pillar: 'SELL'
                 }
             ],
             post_retreat: [
                 {
-                    id: 'post1',
-                    name: "📧 Thank You & UGC Request",
-                    channels: ['Email', 'WhatsApp'],
-                    days_after: 3,
-                    description: "Thank guests and request photos. Offer discount code.",
-                    pillar: 'ALIGN'
-                },
-                {
-                    id: 'post2',
-                    name: "📸 Sort & Select UGC",
-                    channels: ['Internal'],
-                    days_after: 7,
-                    description: "Review submissions and prepare collaboration posts.",
-                    pillar: 'ALIGN'
-                },
-                {
-                    id: 'post3',
-                    name: "📱 Post UGC Carousel",
+                    id: 'pr1',
+                    name: "📸 Share Retreat Highlights",
                     channels: ['Instagram', 'Facebook'],
-                    days_after: 10,
-                    description: "Share curated content. Tag/collaborate with guests.",
-                    pillar: 'ALIGN'
-                },
-                {
-                    id: 'post4',
-                    name: "📧 Newsletter Feature",
-                    channels: ['Email', 'Website'],
-                    days_after: 14,
-                    description: "Feature retreat highlights with photos and stories.",
-                    pillar: 'ALIGN'
-                },
-                {
-                    id: 'post5',
-                    name: "🎬 Create Highlight Reel",
-                    channels: ['Instagram', 'Facebook', 'Website'],
-                    days_after: 21,
-                    description: "Edit professional and UGC into compelling reel.",
-                    pillar: 'EXPLORE'
-                },
-                {
-                    id: 'post6',
-                    name: "📊 Gather Testimonials",
-                    channels: ['Email'],
-                    days_after: 14,
-                    description: "Request formal testimonials for future marketing.",
+                    days_after: 3,
+                    description: "Post photos and testimonials",
                     pillar: 'ALIGN'
                 }
             ]
         };
 
-        // Adventure Yogi retreat data with realistic names and locations
-        const ADVENTURE_YOGI_RETREATS = [
-            {
-                id: "retreat_2025_01",
-                name: "Autumn Yoga Retreat",
-                start_date: "2025-10-24",
-                end_date: "2025-10-27",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2025_02",
-                name: "Mindful Movement Retreat",
-                start_date: "2025-10-27",
-                end_date: "2025-10-31",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2025_03",
-                name: "Coastal Yoga Weekend",
-                start_date: "2025-11-07",
-                end_date: "2025-11-10",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2025_04",
-                name: "Hiking & Yoga Retreat",
-                start_date: "2025-11-10",
-                end_date: "2025-11-14",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2025_05",
-                name: "Winter Solace Retreat",
-                start_date: "2025-11-14",
-                end_date: "2025-11-17",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2025_06",
-                name: "Restorative Yoga Retreat",
-                start_date: "2025-11-17",
-                end_date: "2025-11-21",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2025_07",
-                name: "New Year Yoga Holiday",
-                start_date: "2025-12-29",
-                end_date: "2026-01-02",
-                location: "Cornwall",
-                duration: 5,
-                retreat_type: "Holiday"
-            },
-            {
-                id: "retreat_2026_01",
-                name: "New Year: Hiking Yoga Retreat",
-                start_date: "2026-01-02",
-                end_date: "2026-01-05",
-                location: "Hope Valley, Peak District",
-                duration: 4,
-                retreat_type: "Holiday"
-            },
-            {
-                id: "retreat_2026_02",
-                name: "Winter Yoga Escape",
-                start_date: "2026-02-06",
-                end_date: "2026-02-09",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_03",
-                name: "Yoga & Mindfulness Retreat",
-                start_date: "2026-02-09",
-                end_date: "2026-02-13",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_04",
-                name: "8 Nights Yoga Holiday",
-                start_date: "2026-02-20",
-                end_date: "2026-02-27",
-                location: "Sri Lanka",
-                duration: 8,
-                retreat_type: "Holiday"
-            },
-            {
-                id: "retreat_2026_05",
-                name: "Wellness & Adventure Retreat",
-                start_date: "2026-02-23",
-                end_date: "2026-02-27",
-                location: "Morocco",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_06",
-                name: "Spring Awakening Retreat",
-                start_date: "2026-03-06",
-                end_date: "2026-03-09",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_07",
-                name: "Yoga & Hiking Adventure",
-                start_date: "2026-03-09",
-                end_date: "2026-03-13",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_08",
-                name: "Coastal Wellbeing Retreat",
-                start_date: "2026-03-13",
-                end_date: "2026-03-16",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_09",
-                name: "Mountain Yoga Retreat",
-                start_date: "2026-03-16",
-                end_date: "2026-03-20",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_10",
-                name: "Easter Yoga Retreat",
-                start_date: "2026-03-27",
-                end_date: "2026-03-30",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_11",
-                name: "Yoga Holiday in Morocco",
-                start_date: "2026-03-30",
-                end_date: "2026-04-03",
-                location: "Essaouira, Morocco",
-                duration: 5,
-                retreat_type: "Holiday"
-            },
-            {
-                id: "retreat_2026_12",
-                name: "Spring Yoga Weekend",
-                start_date: "2026-04-17",
-                end_date: "2026-04-20",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_13",
-                name: "Yoga & Walking Retreat",
-                start_date: "2026-04-20",
-                end_date: "2026-04-24",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_14",
-                name: "Tropical Yoga Escape",
-                start_date: "2026-05-15",
-                end_date: "2026-05-22",
-                location: "Costa Rica",
-                duration: 8,
-                retreat_type: "Holiday"
-            },
-            {
-                id: "retreat_2026_15",
-                name: "Active Yoga Retreat",
-                start_date: "2026-05-18",
-                end_date: "2026-05-22",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_16",
-                name: "Summer Solstice Retreat",
-                start_date: "2026-06-12",
-                end_date: "2026-06-15",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_17",
-                name: "Adventure & Yoga Week",
-                start_date: "2026-06-15",
-                end_date: "2026-06-19",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_18",
-                name: "Mediterranean Yoga Holiday",
-                start_date: "2026-07-10",
-                end_date: "2026-07-17",
-                location: "Portugal",
-                duration: 8,
-                retreat_type: "Holiday"
-            },
-            {
-                id: "retreat_2026_19",
-                name: "Summer Yoga Retreat",
-                start_date: "2026-07-13",
-                end_date: "2026-07-17",
-                location: "Cornwall",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_20",
-                name: "Coastal Summer Retreat",
-                start_date: "2026-07-17",
-                end_date: "2026-07-20",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_21",
-                name: "Yoga & Surfing Retreat",
-                start_date: "2026-07-20",
-                end_date: "2026-07-24",
-                location: "Cornwall",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_22",
-                name: "Island Yoga Holiday",
-                start_date: "2026-08-14",
-                end_date: "2026-08-21",
-                location: "Madeira",
-                duration: 8,
-                retreat_type: "Holiday"
-            },
-            {
-                id: "retreat_2026_23",
-                name: "Peak Summer Retreat",
-                start_date: "2026-08-17",
-                end_date: "2026-08-21",
-                location: "Peak District",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_24",
-                name: "Summer Yoga Weekend",
-                start_date: "2026-08-21",
-                end_date: "2026-08-24",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_25",
-                name: "Wild Swimming & Yoga",
-                start_date: "2026-08-24",
-                end_date: "2026-08-28",
-                location: "Cornwall",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_26",
-                name: "Harvest Yoga Retreat",
-                start_date: "2026-09-18",
-                end_date: "2026-09-21",
-                location: "Cornwall",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_27",
-                name: "African Safari & Yoga",
-                start_date: "2026-09-21",
-                end_date: "2026-09-28",
-                location: "Kenya",
-                duration: 8,
-                retreat_type: "Holiday"
-            },
-            {
-                id: "retreat_2026_28",
-                name: "Autumn Yoga Weekend",
-                start_date: "2026-10-16",
-                end_date: "2026-10-19",
-                location: "Peak District",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_29",
-                name: "Mindful Autumn Retreat",
-                start_date: "2026-10-19",
-                end_date: "2026-10-23",
-                location: "Cornwall",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_30",
-                name: "Halloween Yoga Retreat",
-                start_date: "2026-10-23",
-                end_date: "2026-10-26",
-                location: "Peak District",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_31",
-                name: "Pre-Winter Wellness",
-                start_date: "2026-10-26",
-                end_date: "2026-10-30",
-                location: "Cornwall",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            },
-            {
-                id: "retreat_2026_32",
-                name: "November Renewal Retreat",
-                start_date: "2026-11-06",
-                end_date: "2026-11-09",
-                location: "Peak District",
-                duration: 4,
-                retreat_type: "Weekend"
-            },
-            {
-                id: "retreat_2026_33",
-                name: "Winter Preparation Retreat",
-                start_date: "2026-11-09",
-                end_date: "2026-11-13",
-                location: "Cornwall",
-                duration: 5,
-                retreat_type: "Mid-Week"
-            }
-        ];
-
-        const CHANNEL_COLORS = {
-            'Instagram': 'bg-pink-100 text-pink-700',
-            'Facebook': 'bg-blue-100 text-blue-700',
-            'Email': 'bg-purple-100 text-purple-700',
-            'Website': 'bg-green-100 text-green-700',
-            'WhatsApp': 'bg-emerald-100 text-emerald-700',
-            'On-site': 'bg-gray-100 text-gray-700',
-            'Internal': 'bg-amber-100 text-amber-700',
-            'All': 'bg-indigo-100 text-indigo-700'
-        };
-
-        const PILLAR_COLORS = {
-            'EXPLORE': 'bg-blue-500 text-white',
-            'ALIGN': 'bg-purple-500 text-white',
-            'SELL': 'bg-orange-500 text-white',
-            'ALL': 'bg-gray-500 text-white'
-        };
-
         function App() {
-            const [step, setStep] = useState('customize'); // Skip connect step since we have data
-            const [retreats, setRetreats] = useState(ADVENTURE_YOGI_RETREATS);
-            const [selectedRetreats, setSelectedRetreats] = useState(ADVENTURE_YOGI_RETREATS.map(r => r.id));
+            const [step, setStep] = useState('scrape'); // scrape, customize, generate
+            const [retreats, setRetreats] = useState([]);
+            const [selectedRetreats, setSelectedRetreats] = useState([]);
             const [tasks, setTasks] = useState(DEFAULT_TASKS);
-            const [error, setError] = useState('');
+            const [extracting, setExtracting] = useState(false);
+            const [progress, setProgress] = useState('');
 
-            useEffect(() => {
-                // Filter retreats to only show future dates
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                const futureRetreats = ADVENTURE_YOGI_RETREATS.filter(retreat => {
-                    const startDate = new Date(retreat.start_date);
-                    return startDate >= today;
-                });
-                
-                setRetreats(futureRetreats);
-                setSelectedRetreats(futureRetreats.map(r => r.id));
-            }, []);
+            // Extract retreats from current webpage
+            const extractRetreats = () => {
+                setExtracting(true);
+                setProgress('Scanning webpage for retreat information...');
 
-            const updateRetreatDetails = (retreatId, field, value) => {
-                setRetreats(prev => prev.map(retreat => 
-                    retreat.id === retreatId 
-                        ? { ...retreat, [field]: value }
-                        : retreat
-                ));
-            };
-
-            const toggleTask = (category, taskId) => {
-                setTasks(prev => ({
-                    ...prev,
-                    [category]: prev[category].map(task =>
-                        task.id === taskId ? { ...task, enabled: !task.enabled } : task
-                    )
-                }));
-            };
-
-            const updateTask = (category, taskId, field, value) => {
-                setTasks(prev => ({
-                    ...prev,
-                    [category]: prev[category].map(task =>
-                        task.id === taskId ? { ...task, [field]: value } : task
-                    )
-                }));
-            };
-
-            const addTask = (category) => {
-                const newTask = {
-                    id: `custom_${Date.now()}`,
-                    name: "📝 New Custom Task",
-                    channels: ['Instagram'],
-                    days_before: category === 'post_retreat' ? undefined : 30,
-                    days_after: category === 'post_retreat' ? 7 : undefined,
-                    description: "Add task description here...",
-                    pillar: 'EXPLORE',
-                    enabled: true,
-                    custom: true
-                };
-                
-                setTasks(prev => ({
-                    ...prev,
-                    [category]: [...prev[category], newTask]
-                }));
-            };
-
-            const removeTask = (category, taskId) => {
-                setTasks(prev => ({
-                    ...prev,
-                    [category]: prev[category].filter(task => task.id !== taskId)
-                }));
+                try {
+                    const extractedRetreats = [];
+                    const locations = ['Cornwall','Devon','Wales','Scotland','France','Spain','Portugal','Morocco','Bali','Kenya','Costa Rica','Montenegro','Slovenia','Madeira','Marrakech','Sardinia','Alps','Peak District','Lake District','Brecon Beacons','Norfolk','Dorset','Yorkshire','Cotswolds','Almeria','Corfu','Essaouira','Atlas Mountains','Sweden','Greece','Italy'];
+                    
+                    const allElements = document.querySelectorAll('*');
+                    
+                    for (let i = 0; i < allElements.length; i++) {
+                        const element = allElements[i];
+                        const text = element.textContent || '';
+                        
+                        // Look for date patterns like "15th Jul - 22nd Jul 2025"
+                        const dateMatch = text.match(/(\d{1,2})(?:st|nd|rd|th)?\s+(\w{3,9})\s*-\s*(\d{1,2})(?:st|nd|rd|th)?\s+(\w{3,9})\s+(\d{4})/i);
+                        
+                        if (dateMatch) {
+                            // Check for location
+                            let location = '';
+                            for (let j = 0; j < locations.length; j++) {
+                                if (text.toLowerCase().includes(locations[j].toLowerCase())) {
+                                    location = locations[j];
+                                    break;
+                                }
+                            }
+                            
+                            if (location) {
+                                // Find retreat name
+                                let name = '';
+                                const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+                                if (heading) {
+                                    name = heading.textContent.trim();
+                                }
+                                
+                                if (!name) {
+                                    const lines = text.split('\n');
+                                    for (let k = 0; k < lines.length; k++) {
+                                        const line = lines[k].trim();
+                                        if (line.length > 10 && line.length < 150 && 
+                                            (line.toLowerCase().includes('retreat') || 
+                                             line.toLowerCase().includes('yoga') || 
+                                             line.toLowerCase().includes('holiday') ||
+                                             line.toLowerCase().includes('nights'))) {
+                                            name = line;
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                if (name) {
+                                    // Convert dates
+                                    const monthMap = {
+                                        'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06',
+                                        'Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12',
+                                        'January':'01','February':'02','March':'03','April':'04','May':'05','June':'06',
+                                        'July':'07','August':'08','September':'09','October':'10','November':'11','December':'12'
+                                    };
+                                    
+                                    const startDay = dateMatch[1].padStart(2, '0');
+                                    const startMonthText = dateMatch[2];
+                                    const endDay = dateMatch[3].padStart(2, '0');
+                                    const endMonthText = dateMatch[4];
+                                    const year = dateMatch[5];
+                                    
+                                    const startMonth = monthMap[startMonthText] || monthMap[startMonthText.substring(0,3)] || '01';
+                                    const endMonth = monthMap[endMonthText] || monthMap[endMonthText.substring(0,3)] || '01';
+                                    
+                                    const startDate = `${startDay}/${startMonth}/${year}`;
+                                    const endDate = `${endDay}/${endMonth}/${year}`;
+                                    
+                                    // Calculate duration
+                                    const start = new Date(year, parseInt(startMonth)-1, parseInt(startDay));
+                                    const end = new Date(year, parseInt(endMonth)-1, parseInt(endDay));
+                                    const duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                                    
+                                    // Classify type
+                                    let retreat_type = 'Holiday';
+                                    if (duration <= 3) retreat_type = 'Weekend';
+                                    else if (duration <= 5) retreat_type = 'Mid-Week';
+                                    
+                                    // Check for duplicates
+                                    const isDuplicate = extractedRetreats.some(r => 
+                                        r.name === name && r.start_date === startDate
+                                    );
+                                    
+                                    if (!isDuplicate) {
+                                        extractedRetreats.push({
+                                            id: `${name}_${startDate}`.replace(/[^a-zA-Z0-9]/g, '_'),
+                                            name: name,
+                                            start_date: startDate,
+                                            end_date: endDate,
+                                            location: location,
+                                            duration: duration,
+                                            retreat_type: retreat_type
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    setProgress(`Found ${extractedRetreats.length} retreats!`);
+                    
+                    if (extractedRetreats.length === 0) {
+                        alert('No retreats found on this page. Please navigate to the Adventure Yogi retreat calendar page and try again.');
+                        setExtracting(false);
+                        return;
+                    }
+                    
+                    // Sort by date
+                    extractedRetreats.sort((a, b) => {
+                        const dateA = new Date(a.start_date.split('/').reverse().join('-'));
+                        const dateB = new Date(b.start_date.split('/').reverse().join('-'));
+                        return dateA - dateB;
+                    });
+                    
+                    setRetreats(extractedRetreats);
+                    setSelectedRetreats(extractedRetreats.map(r => r.id));
+                    
+                    setTimeout(() => {
+                        setStep('customize');
+                        setExtracting(false);
+                    }, 1000);
+                    
+                } catch (err) {
+                    alert('Error extracting retreats: ' + err.message);
+                    setExtracting(false);
+                }
             };
 
             const generateCSV = () => {
-                let csv = 'Task Name,Start Date,Due Date,Notes,Tags\n';
+                const selectedRetreatsList = retreats.filter(r => selectedRetreats.includes(r.id));
                 
-                selectedRetreats.forEach(retreatId => {
-                    const retreat = retreats.find(r => r.id === retreatId);
-                    if (!retreat) return;
-
-                    const startDate = new Date(retreat.start_date);
-                    const endDate = new Date(retreat.end_date);
-
-                    // Milestone
-                    const milestoneNotes = `Retreat: ${retreat.name} | ${retreat.location} | ${retreat.retreat_type} (${retreat.duration} days) | ${retreat.start_date} to ${retreat.end_date}`;
-                    csv += `"🧘 ${retreat.name} - ${retreat.location}","${formatDate(startDate)}","${formatDate(startDate)}","${milestoneNotes}","milestone,retreat,${retreat.retreat_type}"\n`;
-
+                let csv = 'Name,Start Date,End Date,Notes,Tags\n';
+                
+                selectedRetreatsList.forEach(retreat => {
+                    // Parse dates (DD/MM/YYYY format)
+                    const [startDay, startMonth, startYear] = retreat.start_date.split('/');
+                    const [endDay, endMonth, endYear] = retreat.end_date.split('/');
+                    const startDate = new Date(startYear, startMonth - 1, startDay);
+                    const endDate = new Date(endYear, endMonth - 1, endDay);
+                    
+                    const formatDate = (date) => {
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getFullYear();
+                        return `${month}/${day}/${year}`;
+                    };
+                    
+                    // Milestone row
+                    const milestoneNotes = `Retreat: ${retreat.location} | ${retreat.retreat_type} (${retreat.duration} nights) | ${retreat.start_date} to ${retreat.end_date}`;
+                    csv += `"🧘 ${retreat.name}","${formatDate(startDate)}","${formatDate(startDate)}","${milestoneNotes}","milestone,retreat,${retreat.retreat_type}"\n`;
+                    
                     // Add tasks
                     Object.entries(tasks).forEach(([category, taskList]) => {
                         taskList.forEach(task => {
                             if (task.enabled === false) return;
-
+                            
                             let dueDate;
                             if (task.days_before !== undefined) {
                                 dueDate = new Date(startDate);
@@ -741,16 +291,16 @@
                             } else {
                                 dueDate = startDate;
                             }
-
+                            
                             const channels = task.channels.join(', ');
-                            const notes = `${retreat.name} - ${retreat.location} (${retreat.retreat_type}) | ${task.description} | Channels: ${channels} | Pillar: ${task.pillar}`;
-                            const tags = `${retreat.name},${retreat.location},${task.pillar},${category},${retreat.retreat_type}`;
-
+                            const notes = `${retreat.name} (${retreat.retreat_type}) | ${task.description} | Channels: ${channels} | Pillar: ${task.pillar}`;
+                            const tags = `${retreat.name},${task.pillar},${category},${retreat.retreat_type}`;
+                            
                             csv += `"${task.name}","${formatDate(startDate)}","${formatDate(dueDate)}","${notes}","${tags}"\n`;
                         });
                     });
                 });
-
+                
                 return csv;
             };
 
@@ -761,17 +311,25 @@
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = `adventure-yogi-retreats-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
                 a.click();
+                document.body.removeChild(a);
             };
 
-            const formatDate = (date) => {
-                return date.toISOString().split('T')[0];
-            };
-
-            const formatDisplayDate = (dateStr) => {
-                const date = new Date(dateStr);
-                return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-            };
+            const Step = ({ number, label, active, completed }) => (
+                <div className="flex flex-col items-center">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
+                        completed ? 'bg-green-500 text-white' : 
+                        active ? 'bg-purple-600 text-white' : 
+                        'bg-gray-300 text-gray-600'
+                    }`}>
+                        {completed ? '✓' : number}
+                    </div>
+                    <span className={`mt-2 text-sm font-medium ${active ? 'text-purple-600' : 'text-gray-500'}`}>
+                        {label}
+                    </span>
+                </div>
+            );
 
             return (
                 <div className="min-h-screen">
@@ -780,458 +338,174 @@
                         <div className="max-w-7xl mx-auto">
                             <h1 className="text-4xl font-bold mb-2">🧘 Adventure Yogi</h1>
                             <p className="text-xl opacity-90">Retreat Marketing Planner</p>
-                            <div className="bg-white bg-opacity-20 rounded-lg p-4 mt-4">
-                                <p className="text-sm">
-                                    📅 Loaded {retreats.length} upcoming retreats from your calendar
-                                </p>
-                            </div>
                         </div>
                     </div>
 
                     {/* Progress Steps */}
                     <div className="max-w-7xl mx-auto px-4 py-8">
                         <div className="flex items-center justify-center space-x-4 mb-8">
-                            <Step number="1" label="Select Retreats" active={step === 'customize'} completed={step === 'generate'} />
+                            <Step number="1" label="Extract" active={step === 'scrape'} completed={step !== 'scrape'} />
                             <div className="w-16 h-1 bg-gray-300"></div>
-                            <Step number="2" label="Customize Tasks" active={step === 'customize'} />
+                            <Step number="2" label="Customize" active={step === 'customize'} completed={step === 'generate'} />
                             <div className="w-16 h-1 bg-gray-300"></div>
                             <Step number="3" label="Generate" active={step === 'generate'} />
                         </div>
 
-                        {/* Step 1 & 2: Select & Customize */}
-                        {step === 'customize' && (
-                            <div>
-                                {/* Retreat Selection & Editing */}
-                                <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-                                    <h2 className="text-2xl font-bold mb-4">Select & Edit Retreats</h2>
-                                    <div className="flex justify-between items-center mb-4">
-                                        <div>
-                                            <span className="text-lg font-medium text-purple-600">
-                                                Found {retreats.length} upcoming retreat{retreats.length !== 1 ? 's' : ''}
-                                            </span>
-                                            <span className="text-gray-600 ml-2">
-                                                ({selectedRetreats.length} selected)
-                                            </span>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => setSelectedRetreats(retreats.map(r => r.id))}
-                                                className="text-sm px-3 py-1 border border-purple-600 text-purple-600 rounded hover:bg-purple-50"
-                                            >
-                                                Select All
-                                            </button>
-                                            <button
-                                                onClick={() => setSelectedRetreats([])}
-                                                className="text-sm px-3 py-1 border border-gray-300 text-gray-600 rounded hover:bg-gray-50"
-                                            >
-                                                Clear All
-                                            </button>
-                                        </div>
+                        {/* Step 1: Extract Retreats */}
+                        {step === 'scrape' && (
+                            <div className="max-w-2xl mx-auto">
+                                <div className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-2xl font-bold mb-4">📊 Extract Retreat Data</h2>
+                                    <p className="text-gray-600 mb-6">
+                                        This tool will scan the current webpage for Adventure Yogi retreat information.
+                                    </p>
+
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                        <h3 className="font-semibold text-blue-900 mb-2">📋 Instructions:</h3>
+                                        <ol className="text-sm text-blue-800 space-y-2 list-decimal list-inside">
+                                            <li>Navigate to <strong>adventureyogi.com/yoga-holidays</strong></li>
+                                            <li>Make sure retreat cards with dates and locations are visible</li>
+                                            <li>Scroll down to load all retreats on the page</li>
+                                            <li>Click "Extract Retreats" below</li>
+                                        </ol>
                                     </div>
-                                    
-                                    {retreats.length === 0 ? (
-                                        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded">
-                                            <p className="font-medium">No upcoming retreats found</p>
-                                            <p className="text-sm mt-1">Make sure you have retreats scheduled starting from today or in the future.</p>
+
+                                    {progress && (
+                                        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
+                                            {progress}
                                         </div>
-                                    ) : (
-                                        <div className="grid grid-cols-1 gap-4">
-                                            {retreats.map(retreat => (
-                                                <RetreatCard
-                                                    key={retreat.id}
-                                                    retreat={retreat}
-                                                    isSelected={selectedRetreats.includes(retreat.id)}
-                                                    onSelect={(selected) => {
-                                                        if (selected) {
+                                    )}
+
+                                    <button
+                                        onClick={extractRetreats}
+                                        disabled={extracting}
+                                        className="w-full bg-purple-600 text-white py-4 px-6 rounded-lg hover:bg-purple-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold text-lg"
+                                    >
+                                        {extracting ? '🔄 Extracting...' : '📊 Extract Retreats from This Page'}
+                                    </button>
+
+                                    <p className="text-xs text-gray-500 mt-4 text-center">
+                                        This will analyze the current webpage and extract retreat details including dates, locations, and names.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Step 2: Customize */}
+                        {step === 'customize' && (
+                            <div className="max-w-4xl mx-auto">
+                                <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+                                    <h2 className="text-2xl font-bold mb-4">✅ Select Retreats</h2>
+                                    <p className="text-gray-600 mb-6">
+                                        Found {retreats.length} retreats. Select which ones to create marketing plans for:
+                                    </p>
+
+                                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                                        {retreats.map(retreat => (
+                                            <label key={retreat.id} className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedRetreats.includes(retreat.id)}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
                                                             setSelectedRetreats([...selectedRetreats, retreat.id]);
                                                         } else {
                                                             setSelectedRetreats(selectedRetreats.filter(id => id !== retreat.id));
                                                         }
                                                     }}
-                                                    onUpdate={(field, value) => updateRetreatDetails(retreat.id, field, value)}
-                                                    formatDisplayDate={formatDisplayDate}
+                                                    className="mt-1"
                                                 />
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
+                                                <div className="flex-1">
+                                                    <div className="font-semibold">{retreat.name}</div>
+                                                    <div className="text-sm text-gray-600">
+                                                        {retreat.start_date} → {retreat.end_date} | {retreat.location} | {retreat.duration} nights
+                                                    </div>
+                                                    <span className={`inline-block mt-1 px-2 py-1 rounded text-xs font-medium ${
+                                                        retreat.retreat_type === 'Weekend' ? 'bg-blue-100 text-blue-700' :
+                                                        retreat.retreat_type === 'Mid-Week' ? 'bg-purple-100 text-purple-700' :
+                                                        'bg-orange-100 text-orange-700'
+                                                    }`}>
+                                                        {retreat.retreat_type}
+                                                    </span>
+                                                </div>
+                                            </label>
+                                        ))}
+                                    </div>
 
-                                <TaskCustomizer tasks={tasks} setTasks={setTasks} addTask={addTask} removeTask={removeTask} updateTask={updateTask} toggleTask={toggleTask} />
-
-                                <div className="flex justify-end mt-8">
-                                    <button
-                                        onClick={() => setStep('generate')}
-                                        disabled={selectedRetreats.length === 0}
-                                        className="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 disabled:opacity-50"
-                                    >
-                                        Continue to Generate →
-                                    </button>
+                                    <div className="flex space-x-4 mt-6">
+                                        <button
+                                            onClick={() => setStep('scrape')}
+                                            className="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-300 transition font-semibold"
+                                        >
+                                            ← Back
+                                        </button>
+                                        <button
+                                            onClick={() => setStep('generate')}
+                                            disabled={selectedRetreats.length === 0}
+                                            className="flex-1 bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
+                                        >
+                                            Continue to Generate →
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* Step 3: Generate CSV */}
+                        {/* Step 3: Generate */}
                         {step === 'generate' && (
                             <div className="max-w-4xl mx-auto">
                                 <div className="bg-white rounded-lg shadow-lg p-8">
-                                    <h2 className="text-2xl font-bold mb-4">🎉 Ready to Generate!</h2>
-                                    
-                                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-6">
-                                        <h3 className="font-bold text-lg mb-3">Summary</h3>
-                                        <div className="space-y-2 text-gray-700">
-                                            <div>📅 <strong>{selectedRetreats.length}</strong> retreat{selectedRetreats.length !== 1 ? 's' : ''} selected</div>
-                                            <div>✅ <strong>{Object.values(tasks).flat().filter(t => t.enabled !== false).length}</strong> marketing tasks per retreat</div>
-                                            <div>📊 <strong>{selectedRetreats.length * Object.values(tasks).flat().filter(t => t.enabled !== false).length}</strong> total tasks will be created</div>
-                                            <div className="text-sm text-gray-600 mt-3 pt-3 border-t">
-                                                Retreats: {(() => {
-                                                    const types = retreats.filter(r => selectedRetreats.includes(r.id))
-                                                        .reduce((acc, r) => {
-                                                            acc[r.retreat_type] = (acc[r.retreat_type] || 0) + 1;
-                                                            return acc;
-                                                        }, {});
-                                                    return Object.entries(types).map(([type, count]) => `${count} ${type}`).join(', ');
-                                                })()}
-                                            </div>
-                                        </div>
+                                    <h2 className="text-2xl font-bold mb-4">📥 Download CSV</h2>
+                                    <p className="text-gray-600 mb-6">
+                                        Your marketing plan is ready with {selectedRetreats.length} retreat(s) and {
+                                            Object.values(tasks).flat().filter(t => t.enabled !== false).length
+                                        } tasks per retreat.
+                                    </p>
+
+                                    <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                                        <h3 className="font-semibold text-green-900 mb-3">✨ What's included:</h3>
+                                        <ul className="text-sm text-green-800 space-y-2">
+                                            <li>✅ Milestone markers for each retreat start date</li>
+                                            <li>✅ Pre-launch tasks (60-35 days before)</li>
+                                            <li>✅ Launch tasks (35-30 days before)</li>
+                                            <li>✅ Ongoing promotion tasks</li>
+                                            <li>✅ Final push tasks (7 days before)</li>
+                                            <li>✅ Post-retreat follow-up tasks</li>
+                                        </ul>
                                     </div>
 
-                                    <div className="mb-6">
-                                        <h3 className="font-bold mb-3">CSV Import Instructions</h3>
-                                        <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm text-gray-600">
-                                            <p>1. Download the CSV file below</p>
-                                            <p>2. Open Asana and go to your project</p>
-                                            <p>3. Click the "..." menu → Import → CSV</p>
-                                            <p>4. Upload the file and map columns:</p>
-                                            <ul className="ml-6 list-disc space-y-1">
-                                                <li>Task Name → Name</li>
-                                                <li>Due Date → Due Date</li>
-                                                <li>Notes → Description</li>
-                                                <li>Tags → Tags</li>
-                                            </ul>
-                                        </div>
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                                        <h3 className="font-semibold text-blue-900 mb-3">📋 Import to Asana:</h3>
+                                        <ol className="text-sm text-blue-800 space-y-2 list-decimal list-inside">
+                                            <li>Go to your Asana project</li>
+                                            <li>Click the dropdown menu (top right) → Import → CSV</li>
+                                            <li>Upload the downloaded CSV file</li>
+                                            <li>Map columns: Name→Name, Start Date→Start Date, End Date→Due Date, Notes→Notes, Tags→Tags</li>
+                                            <li>Click Import</li>
+                                        </ol>
                                     </div>
 
                                     <button
                                         onClick={downloadCSV}
-                                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 px-6 rounded-lg font-bold text-lg hover:shadow-lg transition"
+                                        className="w-full bg-purple-600 text-white py-4 px-6 rounded-lg hover:bg-purple-700 transition font-semibold text-lg mb-4"
                                     >
                                         📥 Download CSV for Asana
                                     </button>
 
-                                    <div className="flex justify-between mt-8">
-                                        <button
-                                            onClick={() => setStep('customize')}
-                                            className="px-6 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
-                                        >
-                                            ← Back to Customize
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setStep('customize');
-                                                setSelectedRetreats(retreats.map(r => r.id));
-                                                setTasks(DEFAULT_TASKS);
-                                            }}
-                                            className="px-6 py-3 text-purple-600 font-medium hover:underline"
-                                        >
-                                            Start Over
-                                        </button>
-                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            setStep('scrape');
+                                            setRetreats([]);
+                                            setSelectedRetreats([]);
+                                        }}
+                                        className="w-full bg-gray-200 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-300 transition font-semibold"
+                                    >
+                                        ↺ Start Over
+                                    </button>
                                 </div>
                             </div>
                         )}
                     </div>
-                </div>
-            );
-        }
-
-        function RetreatCard({ retreat, isSelected, onSelect, onUpdate, formatDisplayDate }) {
-            const [isEditing, setIsEditing] = useState(false);
-
-            return (
-                <div className={`border rounded-lg p-4 transition ${isSelected ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}>
-                    <div className="flex items-start justify-between">
-                        <label className="flex items-start cursor-pointer flex-1">
-                            <input
-                                type="checkbox"
-                                checked={isSelected}
-                                onChange={(e) => onSelect(e.target.checked)}
-                                className="mt-1 mr-3"
-                            />
-                            <div className="flex-1">
-                                {isEditing ? (
-                                    <div className="space-y-3">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Retreat Name</label>
-                                            <input
-                                                type="text"
-                                                value={retreat.name}
-                                                onChange={(e) => onUpdate('name', e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                                            <input
-                                                type="text"
-                                                value={retreat.location}
-                                                onChange={(e) => onUpdate('location', e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                                                placeholder="e.g., Cornwall, Sri Lanka, Costa Rica"
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                                                <input
-                                                    type="date"
-                                                    value={retreat.start_date}
-                                                    onChange={(e) => onUpdate('start_date', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                                                <input
-                                                    type="date"
-                                                    value={retreat.end_date}
-                                                    onChange={(e) => onUpdate('end_date', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <div className="font-medium text-lg">{retreat.name}</div>
-                                        <div className="text-gray-600">{retreat.location}</div>
-                                        <div className="flex items-center gap-2 mt-2">
-                                            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
-                                                {retreat.retreat_type}
-                                            </span>
-                                            <span className="text-xs text-gray-500">
-                                                {retreat.duration} days
-                                            </span>
-                                        </div>
-                                        <div className="text-sm text-gray-500 mt-1">
-                                            {formatDisplayDate(retreat.start_date)} - {formatDisplayDate(retreat.end_date)}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </label>
-                        <button
-                            onClick={() => setIsEditing(!isEditing)}
-                            className="ml-3 text-sm text-purple-600 hover:text-purple-700 p-2"
-                        >
-                            {isEditing ? '✓' : '✏️'}
-                        </button>
-                    </div>
-                </div>
-            );
-        }
-
-        function Step({ number, label, active, completed }) {
-            return (
-                <div className="flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold ${
-                        active ? 'bg-purple-600 text-white' : 
-                        completed ? 'bg-green-500 text-white' : 
-                        'bg-gray-200 text-gray-500'
-                    }`}>
-                        {completed ? '✓' : number}
-                    </div>
-                    <div className={`mt-2 text-sm font-medium ${active ? 'text-purple-600' : 'text-gray-500'}`}>
-                        {label}
-                    </div>
-                </div>
-            );
-        }
-
-        function TaskCustomizer({ tasks, setTasks, addTask, removeTask, updateTask, toggleTask }) {
-            const [expandedCategory, setExpandedCategory] = useState('pre_launch');
-
-            const categories = {
-                pre_launch: { title: 'Pre-Launch Tasks', subtitle: '60-35 days before', emoji: '🚀' },
-                promotional: { title: 'Promotional Tasks', subtitle: '30-14 days before', emoji: '📢' },
-                pre_retreat: { title: 'Pre-Retreat Tasks', subtitle: '28-7 days before', emoji: '✈️' },
-                during_retreat: { title: 'During Retreat', subtitle: 'On-site content', emoji: '🎬' },
-                post_retreat: { title: 'Post-Retreat Tasks', subtitle: '3-21 days after', emoji: '💌' }
-            };
-
-            return (
-                <div className="bg-white rounded-lg shadow-lg p-6">
-                    <div className="flex justify-between items-center mb-6">
-                        <div>
-                            <h2 className="text-2xl font-bold">Customize Marketing Tasks</h2>
-                            <p className="text-gray-600">Add, edit, or remove tasks for each phase</p>
-                        </div>
-                        <div className="text-right">
-                            <div className="text-2xl font-bold text-purple-600">
-                                {Object.values(tasks).flat().filter(t => t.enabled !== false).length}
-                            </div>
-                            <div className="text-sm text-gray-600">Active Tasks</div>
-                        </div>
-                    </div>
-
-                    {Object.entries(categories).map(([key, cat]) => (
-                        <div key={key} className="mb-4 border rounded-lg">
-                            <button
-                                onClick={() => setExpandedCategory(expandedCategory === key ? null : key)}
-                                className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className="text-2xl">{cat.emoji}</span>
-                                    <div className="text-left">
-                                        <div className="font-bold">{cat.title}</div>
-                                        <div className="text-sm text-gray-500">{cat.subtitle}</div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
-                                        {tasks[key].filter(t => t.enabled !== false).length} tasks
-                                    </span>
-                                    <span className="text-gray-400">
-                                        {expandedCategory === key ? '▼' : '▶'}
-                                    </span>
-                                </div>
-                            </button>
-
-                            {expandedCategory === key && (
-                                <div className="px-6 py-4 bg-gray-50 space-y-3">
-                                    {tasks[key].map(task => (
-                                        <TaskCard
-                                            key={task.id}
-                                            task={task}
-                                            category={key}
-                                            onToggle={() => toggleTask(key, task.id)}
-                                            onUpdate={(field, value) => updateTask(key, task.id, field, value)}
-                                            onRemove={() => removeTask(key, task.id)}
-                                        />
-                                    ))}
-                                    
-                                    <button
-                                        onClick={() => addTask(key)}
-                                        className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-purple-500 hover:text-purple-500 font-medium"
-                                    >
-                                        + Add Custom Task
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            );
-        }
-
-        function TaskCard({ task, category, onToggle, onUpdate, onRemove }) {
-            const [isEditing, setIsEditing] = useState(false);
-
-            return (
-                <div className={`task-card bg-white rounded-lg p-4 border-2 ${task.enabled === false ? 'opacity-50 border-gray-200' : 'border-gray-200'}`}>
-                    <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-start gap-3 flex-1">
-                            <input
-                                type="checkbox"
-                                checked={task.enabled !== false}
-                                onChange={onToggle}
-                                className="mt-1"
-                            />
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    value={task.name}
-                                    onChange={(e) => onUpdate('name', e.target.value)}
-                                    className="flex-1 px-2 py-1 border rounded"
-                                />
-                            ) : (
-                                <div className="flex-1 font-medium">{task.name}</div>
-                            )}
-                        </div>
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setIsEditing(!isEditing)}
-                                className="text-sm text-purple-600 hover:text-purple-700"
-                            >
-                                {isEditing ? '✓' : '✏️'}
-                            </button>
-                            {task.custom && (
-                                <button
-                                    onClick={onRemove}
-                                    className="text-sm text-red-600 hover:text-red-700"
-                                >
-                                    🗑️
-                                </button>
-                            )}
-                        </div>
-                    </div>
-
-                    {isEditing ? (
-                        <div className="space-y-3 ml-8">
-                            <div>
-                                <label className="text-xs font-medium text-gray-600 block mb-1">Description</label>
-                                <textarea
-                                    value={task.description}
-                                    onChange={(e) => onUpdate('description', e.target.value)}
-                                    className="w-full px-3 py-2 border rounded text-sm"
-                                    rows="2"
-                                />
-                            </div>
-                            
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="text-xs font-medium text-gray-600 block mb-1">
-                                        {task.days_after !== undefined ? 'Days After Retreat' : 'Days Before Retreat'}
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={task.days_before !== undefined ? task.days_before : task.days_after}
-                                        onChange={(e) => onUpdate(task.days_after !== undefined ? 'days_after' : 'days_before', parseInt(e.target.value))}
-                                        className="w-full px-3 py-2 border rounded text-sm"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-xs font-medium text-gray-600 block mb-1">Content Pillar</label>
-                                    <select
-                                        value={task.pillar}
-                                        onChange={(e) => onUpdate('pillar', e.target.value)}
-                                        className="w-full px-3 py-2 border rounded text-sm"
-                                    >
-                                        <option value="EXPLORE">EXPLORE</option>
-                                        <option value="ALIGN">ALIGN</option>
-                                        <option value="SELL">SELL</option>
-                                        <option value="ALL">ALL</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="text-xs font-medium text-gray-600 block mb-1">Channels (comma-separated)</label>
-                                <input
-                                    type="text"
-                                    value={task.channels.join(', ')}
-                                    onChange={(e) => onUpdate('channels', e.target.value.split(',').map(s => s.trim()))}
-                                    className="w-full px-3 py-2 border rounded text-sm"
-                                />
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="ml-8 space-y-2">
-                            <div className="text-sm text-gray-600">{task.description}</div>
-                            <div className="flex flex-wrap gap-2">
-                                {task.channels.map(channel => (
-                                    <span key={channel} className={`pill text-xs ${CHANNEL_COLORS[channel] || 'bg-gray-100 text-gray-600'}`}>
-                                        {channel}
-                                    </span>
-                                ))}
-                                <span className={`pill text-xs ${PILLAR_COLORS[task.pillar]}`}>
-                                    {task.pillar}
-                                </span>
-                                <span className="pill text-xs bg-gray-100 text-gray-600">
-                                    {task.days_before !== undefined ? `${task.days_before}d before` : `${task.days_after}d after`}
-                                </span>
-                            </div>
-                        </div>
-                    )}
                 </div>
             );
         }
